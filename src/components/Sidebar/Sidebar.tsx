@@ -6,8 +6,23 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 import { Icon } from "../Icon";
 import { menuItems } from "./items";
+import { colors } from "../../styles";
+
+const SidebarNavigationItem = styled(ListItem)(() => ({
+  padding: "0",
+  "&:not(:last-child)": {
+    marginBottom: "0.25em",
+  },
+  "& .MuiListItem-root": {
+    "& .MuiListItemButton-root": {
+      padding: "0.5em 0.75em",
+    },
+  },
+}));
 
 export const Sidebar = () => {
   return (
@@ -15,18 +30,22 @@ export const Sidebar = () => {
       {/* Sidebar header here containing logo */}
       <Divider />
       <Box>
-        <List>
+        <List disablePadding>
           {menuItems.map((menuItem) => (
-            <ListItem key={menuItem.path}>
+            <SidebarNavigationItem key={menuItem.path}>
               <ListItemButton>
-                {menuItem.iconName && (
-                  <ListItemIcon>
-                    <Icon name={menuItem.iconName} />
-                  </ListItemIcon>
-                )}
-                <ListItemText>{menuItem.label}</ListItemText>
+                <Stack direction="row" spacing={1.5}>
+                  {menuItem.iconName && (
+                    <ListItemIcon color={colors.gray500}>
+                      <Icon name={menuItem.iconName} />
+                    </ListItemIcon>
+                  )}
+                  <ListItemText slotProps={{ primary: { color: "primary" } }}>
+                    {menuItem.label}
+                  </ListItemText>
+                </Stack>
               </ListItemButton>
-            </ListItem>
+            </SidebarNavigationItem>
           ))}
         </List>
       </Box>
