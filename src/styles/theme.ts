@@ -5,7 +5,7 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: "#1C1D22",
-      light: "rgba(28, 29, 34, 0.5",
+      light: "rgba(28, 29, 34, 0.8)",
     },
   },
   components: {

@@ -7,6 +7,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
+import { SidebarHeader } from "./SidebarHeader";
 import { styled } from "@mui/material/styles";
 import { Icon } from "../Icon";
 import { menuItems } from "./items";
@@ -27,7 +28,7 @@ const SidebarNavigationItem = styled(ListItem)(() => ({
 export const Sidebar = () => {
   return (
     <Drawer open variant="permanent">
-      {/* Sidebar header here containing logo */}
+      <SidebarHeader />
       <Divider />
       <Box>
         <List disablePadding>
