@@ -58,3 +58,18 @@ export const menuItems: SidebarItemT[] = [
     iconName: "PolylineOutlined",
   },
 ];
+
+// Additional menu items for footer section - using items.ts structure
+export const footerMenuItems = [
+  {
+    label: "Support",
+    path: "/support",
+    iconName: "AssessmentOutlined" as const,
+  },
+  {
+    label: "Settings", 
+    path: "/settings",
+    iconName: "ConstructionOutlined" as const,
+  },
+];
+
