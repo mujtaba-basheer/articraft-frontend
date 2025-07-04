@@ -7,8 +7,19 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import { colors } from "../styles";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { useState } from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import { useState } from "react";
 import { AIInsights } from "./AIInsights";
 
 const DashboardContainer = styled(Box)(() => ({
@@ -96,7 +107,7 @@ const MoreDotsIcon = () => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
   </Box>
 );
 
@@ -108,7 +119,7 @@ const InfoIcon = () => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
   </Box>
 );
 
@@ -120,7 +131,7 @@ const ArrowUpIcon = ({ color = colors.green500 }: { color?: string }) => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
   </Box>
 );
 
@@ -132,29 +143,29 @@ const ArrowDownIcon = ({ color = colors.error500 }: { color?: string }) => (
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
   </Box>
 );
 
 // Sample data for Revenue Trend chart
 const revenueData = [
-  { name: 'Sep 23', value: 5000 },
-  { name: 'Oct 23', value: 8000 },
-  { name: 'Nov 23', value: 12000 },
-  { name: 'Dec 23', value: 15000 },
-  { name: 'Jan', value: 35687 },
-  { name: 'Feb', value: 25000 },
-  { name: 'Mar', value: 30000 },
-  { name: 'Apr', value: 28000 },
+  { name: "Sep 23", value: 5000 },
+  { name: "Oct 23", value: 8000 },
+  { name: "Nov 23", value: 12000 },
+  { name: "Dec 23", value: 15000 },
+  { name: "Jan", value: 35687 },
+  { name: "Feb", value: 25000 },
+  { name: "Mar", value: 30000 },
+  { name: "Apr", value: 28000 },
 ];
 
 // Sample data for Revenue Attribution pie chart
 const attributionData = [
-  { name: 'Meta', value: 18465.34, color: '#e91e63', percentage: 41.3 },
-  { name: 'Google', value: 15200.50, color: '#2196f3', percentage: 34.0 },
-  { name: 'Email', value: 6850.25, color: '#4caf50', percentage: 15.3 },
-  { name: 'Direct', value: 3250.75, color: '#ff9800', percentage: 7.3 },
-  { name: 'Other', value: 919.62, color: '#9c27b0', percentage: 2.1 },
+  { name: "Meta", value: 18465.34, color: "#e91e63", percentage: 41.3 },
+  { name: "Google", value: 15200.5, color: "#2196f3", percentage: 34.0 },
+  { name: "Email", value: 6850.25, color: "#4caf50", percentage: 15.3 },
+  { name: "Direct", value: 3250.75, color: "#ff9800", percentage: 7.3 },
+  { name: "Other", value: 919.62, color: "#9c27b0", percentage: 2.1 },
 ];
 
 const TimeFilterButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
@@ -165,9 +176,9 @@ const TimeFilterButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
   textTransform: "none",
   padding: "6px 12px",
   minWidth: "auto",
-  backgroundColor: active ? colors.gray100 : 'transparent',
+  backgroundColor: active ? colors.gray100 : "transparent",
   color: active ? colors.gray900 : colors.gray600,
-  border: 'none',
+  border: "none",
   "&:hover": {
     backgroundColor: colors.gray100,
   },
@@ -212,8 +223,11 @@ export const DashboardContent = () => {
   ];
 
   // Calculate total for default center display
-  const totalRevenue = attributionData.reduce((sum, item) => sum + item.value, 0);
-  
+  const totalRevenue = attributionData.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
+
   // Get current display data (hovered segment or total)
   const getCurrentDisplayData = () => {
     if (hoveredSegment !== null && attributionData[hoveredSegment]) {
@@ -223,22 +237,22 @@ export const DashboardContent = () => {
         name: segment.name,
         percentage: segment.percentage,
         isSegment: true,
-        color: segment.color
+        color: segment.color,
       };
     }
-    
+
     return {
       value: totalRevenue,
       name: "Total Revenue",
       percentage: null,
       isSegment: false,
-      color: colors.gray900
+      color: colors.gray900,
     };
   };
 
   const displayData = getCurrentDisplayData();
 
-  const handleMouseEnter = (data: any, index: number) => {
+  const handleMouseEnter = (_data: any, index: number) => {
     setHoveredSegment(index);
   };
 
@@ -255,7 +269,11 @@ export const DashboardContent = () => {
             <CardContent sx={{ padding: "20px" }}>
               <Stack spacing={2}>
                 {/* Header */}
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Typography
                       variant="body2"
@@ -312,7 +330,9 @@ export const DashboardContent = () => {
                     sx={{
                       fontSize: "12px",
                       fontWeight: 500,
-                      color: metric.isPositive ? colors.green600 : colors.error600,
+                      color: metric.isPositive
+                        ? colors.green600
+                        : colors.error600,
                     }}
                   >
                     {metric.change}
@@ -352,8 +372,8 @@ export const DashboardContent = () => {
               <InfoIcon />
             </Stack>
             <Stack direction="row" spacing={1}>
-              {['1M', 'YTD', '1Y', 'Max'].map((period) => (
-                <TimeFilterButton key={period} active={period === '1M'}>
+              {["1M", "YTD", "1Y", "Max"].map((period) => (
+                <TimeFilterButton key={period} active={period === "1M"}>
                   {period}
                 </TimeFilterButton>
               ))}
@@ -363,32 +383,35 @@ export const DashboardContent = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={colors.gray200} />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: colors.gray500 }}
                 />
-                <YAxis 
+                <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: colors.gray500 }}
                   tickFormatter={(value) => `${value / 1000}K`}
                 />
-                <Tooltip 
-                  formatter={(value: any) => [`$${value.toLocaleString()}`, 'Revenue']}
+                <Tooltip
+                  formatter={(value: any) => [
+                    `$${value.toLocaleString()}`,
+                    "Revenue",
+                  ]}
                   labelStyle={{ color: colors.gray900 }}
-                  contentStyle={{ 
-                    backgroundColor: colors.baseWhite, 
+                  contentStyle={{
+                    backgroundColor: colors.baseWhite,
                     border: `1px solid ${colors.gray200}`,
                     borderRadius: "8px",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                   }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke={colors.blue500} 
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke={colors.blue500}
                   strokeWidth={3}
                   dot={{ fill: colors.blue500, strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6, stroke: colors.blue500, strokeWidth: 2 }}
@@ -396,7 +419,6 @@ export const DashboardContent = () => {
               </LineChart>
             </ResponsiveContainer>
             {/* Data point callout */}
-          
           </Box>
         </ChartCard>
 
@@ -428,7 +450,13 @@ export const DashboardContent = () => {
               Expand
             </Button>
           </ChartHeader>
-          <Box sx={{ padding: "0 20px 20px 20px", height: "320px", position: "relative" }}>
+          <Box
+            sx={{
+              padding: "0 20px 20px 20px",
+              height: "320px",
+              position: "relative",
+            }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -443,96 +471,133 @@ export const DashboardContent = () => {
                   onMouseLeave={handleMouseLeave}
                 >
                   {attributionData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
+                    <Cell
+                      key={`cell-${index}`}
                       fill={entry.color}
-                      stroke={hoveredSegment === index ? colors.baseWhite : "none"}
+                      stroke={
+                        hoveredSegment === index ? colors.baseWhite : "none"
+                      }
                       strokeWidth={hoveredSegment === index ? 3 : 0}
                       style={{
-                        filter: hoveredSegment !== null && hoveredSegment !== index ? 'brightness(0.7)' : 'brightness(1)',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
+                        filter:
+                          hoveredSegment !== null && hoveredSegment !== index
+                            ? "brightness(0.7)"
+                            : "brightness(1)",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
                       }}
                     />
                   ))}
                 </Pie>
-                <Tooltip 
-                  formatter={(value: any) => [`${value.toLocaleString()}`, 'Revenue']}
-                  contentStyle={{ 
-                    backgroundColor: colors.baseWhite, 
+                <Tooltip
+                  formatter={(value: any) => [
+                    `${value.toLocaleString()}`,
+                    "Revenue",
+                  ]}
+                  contentStyle={{
+                    backgroundColor: colors.baseWhite,
                     border: `1px solid ${colors.gray200}`,
                     borderRadius: "8px",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            
+
             {/* Dynamic Center content */}
-            <Box sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              transition: "all 0.3s ease"
-            }}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+                transition: "all 0.3s ease",
+              }}
+            >
               {displayData.isSegment ? (
                 // Show individual segment data
                 <>
-                  <Typography sx={{
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    color: colors.gray600,
-                    marginBottom: "4px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px"
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: colors.gray600,
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
                     {displayData.name}
                   </Typography>
-                  <Typography sx={{
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: displayData.color,
-                    lineHeight: 1,
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: "24px",
+                      fontWeight: 700,
+                      color: displayData.color,
+                      lineHeight: 1,
+                    }}
+                  >
                     ${displayData.value.toLocaleString()}
                   </Typography>
-                  <Typography sx={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: colors.gray600,
-                    marginTop: "4px"
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: colors.gray600,
+                      marginTop: "4px",
+                    }}
+                  >
                     {displayData.percentage}% of total
                   </Typography>
                 </>
               ) : (
                 // Show total revenue data
                 <>
-                  <Typography sx={{
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: colors.gray900,
-                    lineHeight: 1,
-                  }}>
-                    ${Math.floor(displayData.value).toLocaleString()}<Box component="span" sx={{ fontSize: "16px", color: colors.gray500 }}>.{((displayData.value % 1) * 100).toFixed(0).padStart(2, '0')}</Box>
+                  <Typography
+                    sx={{
+                      fontSize: "24px",
+                      fontWeight: 700,
+                      color: colors.gray900,
+                      lineHeight: 1,
+                    }}
+                  >
+                    ${Math.floor(displayData.value).toLocaleString()}
+                    <Box
+                      component="span"
+                      sx={{ fontSize: "16px", color: colors.gray500 }}
+                    >
+                      .
+                      {((displayData.value % 1) * 100)
+                        .toFixed(0)
+                        .padStart(2, "0")}
+                    </Box>
                   </Typography>
-                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={0.5} sx={{ marginTop: "4px" }}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                    spacing={0.5}
+                    sx={{ marginTop: "4px" }}
+                  >
                     <ArrowUpIcon color={colors.green500} />
-                    <Typography sx={{
-                      fontSize: "11px",
-                      fontWeight: 500,
-                      color: colors.green600,
-                    }}>
+                    <Typography
+                      sx={{
+                        fontSize: "11px",
+                        fontWeight: 500,
+                        color: colors.green600,
+                      }}
+                    >
                       $2,235 (5.26%)
                     </Typography>
                   </Stack>
-                  <Typography sx={{
-                    fontSize: "10px",
-                    color: colors.gray500,
-                    marginTop: "2px"
-                  }}>
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      color: colors.gray500,
+                      marginTop: "2px",
+                    }}
+                  >
                     in the past day
                   </Typography>
                 </>
@@ -541,45 +606,55 @@ export const DashboardContent = () => {
 
             {/* Dynamic callout that appears only when hovering */}
             {hoveredSegment !== null && (
-              <Box sx={{
-                position: "absolute",
-                top: "40px",
-                right: "20px",
-                backgroundColor: colors.baseWhite,
-                padding: "8px 12px",
-                borderRadius: "8px",
-                border: `2px solid ${attributionData[hoveredSegment].color}`,
-                boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.15)",
-                transition: "all 0.2s ease",
-                zIndex: 10
-              }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "40px",
+                  right: "20px",
+                  backgroundColor: colors.baseWhite,
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  border: `2px solid ${attributionData[hoveredSegment].color}`,
+                  boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.15)",
+                  transition: "all 0.2s ease",
+                  zIndex: 10,
+                }}
+              >
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Box sx={{
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    backgroundColor: attributionData[hoveredSegment].color
-                  }} />
-                  <Typography sx={{ 
-                    fontSize: "11px", 
-                    color: colors.gray700,
-                    fontWeight: 600
-                  }}>
+                  <Box
+                    sx={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: attributionData[hoveredSegment].color,
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: "11px",
+                      color: colors.gray700,
+                      fontWeight: 600,
+                    }}
+                  >
                     {attributionData[hoveredSegment].name}
                   </Typography>
                 </Stack>
-                <Typography sx={{
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: colors.gray900,
-                  marginTop: "4px"
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: colors.gray900,
+                    marginTop: "4px",
+                  }}
+                >
                   ${attributionData[hoveredSegment].value.toLocaleString()}
                 </Typography>
-                <Typography sx={{
-                  fontSize: "10px",
-                  color: colors.gray500,
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: "10px",
+                    color: colors.gray500,
+                  }}
+                >
                   {attributionData[hoveredSegment].percentage}% of revenue
                 </Typography>
               </Box>
@@ -587,9 +662,7 @@ export const DashboardContent = () => {
           </Box>
         </ChartCard>
       </ChartsContainer>
-      <AIInsights/>
+      <AIInsights />
     </DashboardContainer>
-    
-    
   );
 };
