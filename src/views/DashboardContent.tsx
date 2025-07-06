@@ -21,6 +21,9 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { AIInsights } from "./AIInsights";
+import { TopCampaigns } from "./TopCampaigns";
+import { MetaAdsOverview } from "./MetaAdsOverview";
+import { GoogleAdsOverview } from "./GoogleAdsOverview";
 
 const DashboardContainer = styled(Box)(() => ({
   padding: "20px",
@@ -663,6 +666,9 @@ export const DashboardContent = () => {
         </ChartCard>
       </ChartsContainer>
       <AIInsights />
+      <TopCampaigns />
+      <MetaAdsOverview />
+      <GoogleAdsOverview />
     </DashboardContainer>
   );
 };
