@@ -61,11 +61,11 @@ const ArrowDownIcon = ({ color = colors.error500 }: { color?: string }) => (
   </Box>
 );
 
-// Lightning icon for AI
+// Lightning icon for AI Insights
 const LightningIcon = () => (
   <Box
     component="svg"
-    sx={{ width: 16, height: 16, color: colors.blue500 }}
+    sx={{ width: 16, height: 16, color: "currentColor" }}
     viewBox="0 0 24 24"
     fill="currentColor"
   >
