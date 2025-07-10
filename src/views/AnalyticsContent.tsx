@@ -9,6 +9,9 @@ import { colors } from "../styles";
 import { AIInsights } from "./AIInsights";
 import { TopCampaigns } from "./TopCampaigns";
 import { MetaAdsOverview } from "./MetaAdsOverview";
+import { MetaSectionsOverview } from "./MetaSectionsOverview";
+import { GoogleAdsOverview } from "./GoogleAdsOverview";
+import { GoogleSectionsOverview } from "./GoogleSectionsOverview";
 
 const AnalyticsContainer = styled(Box)(() => ({
   padding: "20px",
@@ -288,6 +291,9 @@ export const AnalyticsContent = () => {
       <AIInsights />
       <TopCampaigns />
       <MetaAdsOverview />
+      <MetaSectionsOverview />
+      <GoogleAdsOverview />
+      <GoogleSectionsOverview />
     </AnalyticsContainer>
   );
 };
