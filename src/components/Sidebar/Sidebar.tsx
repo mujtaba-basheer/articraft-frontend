@@ -12,7 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import { Icon } from "../Icon";
-import { menuItems ,footerMenuItems } from "./items";
+import { menuItems, footerMenuItems } from "./items";
 import { colors } from "../../styles/colors";
 import { useState } from "react";
 
@@ -66,12 +66,19 @@ const LogoutIcon = () => (
   </Box>
 );
 
+interface User {
+  email: string;
+  role: string;
+  name?: string;
+}
 
 interface SidebarProps {
   onPageChange?: (path: string) => void;
+  user?: User | null;
+  onLogout?: () => void;
 }
 
-export const Sidebar = ({ onPageChange }: SidebarProps) => {
+export const Sidebar = ({ onPageChange, user, onLogout }: SidebarProps) => {
   const [activeItem, setActiveItem] = useState("/"); // Dashboard is default active
   
   const handleMenuClick = (path: string) => {
@@ -84,7 +91,37 @@ export const Sidebar = ({ onPageChange }: SidebarProps) => {
   const handleLogout = () => {
     // Handle logout logic
     console.log("Logging out...");
+    onLogout?.();
   };
+
+  // Helper functions for user display
+  const getUserDisplayName = () => {
+    if (user?.name) return user.name;
+    if (user?.email) {
+      const emailName = user.email.split('@')[0];
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1);
+    }
+    return "Vishal Shaw"; // fallback to original
+  };
+
+  const getUserEmail = () => {
+    return user?.email || "Vishal@looptrack.ai"; // fallback to original
+  };
+
+  const getUserInitials = () => {
+    if (user?.name) {
+      const nameParts = user.name.split(" ");
+      if (nameParts.length >= 2) {
+        return nameParts[0].charAt(0).toUpperCase() + nameParts[1].charAt(0).toUpperCase();
+      }
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return "VS"; // fallback to original
+  };
+
   return (
     <Drawer 
       open 
@@ -148,7 +185,6 @@ export const Sidebar = ({ onPageChange }: SidebarProps) => {
                 <ListItemButton
                   onClick={() => handleMenuClick(menuItem.path)}
                   sx={{
-                    
                     '&:hover': {
                       backgroundColor: colors.gray50,
                     },
@@ -237,7 +273,7 @@ export const Sidebar = ({ onPageChange }: SidebarProps) => {
                 color: colors.baseWhite,
               }}
             >
-              VS
+              {getUserInitials()}
             </Avatar>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography 
@@ -249,7 +285,7 @@ export const Sidebar = ({ onPageChange }: SidebarProps) => {
                   lineHeight: 1.2,
                 }}
               >
-                Vishal Shaw
+                {getUserDisplayName()}
               </Typography>
               <Typography 
                 variant="caption" 
@@ -260,7 +296,7 @@ export const Sidebar = ({ onPageChange }: SidebarProps) => {
                 }}
                 noWrap
               >
-                Vishal@looptrack.ai
+                {getUserEmail()}
               </Typography>
             </Box>
             <IconButton

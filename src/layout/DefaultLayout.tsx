@@ -81,7 +81,18 @@ const PageContent = ({ activePage }: { activePage: PagePath }) => {
   }
 };
 
-export const DefaultLayout = () => {
+interface User {
+  email: string;
+  role: string;
+  name?: string;
+}
+
+interface DefaultLayoutProps {
+  user: User | null;
+  onLogout: () => void;
+}
+
+export const DefaultLayout = ({ user, onLogout }: DefaultLayoutProps) => {
   const [activePage, setActivePage] = useState<PagePath>("/");
 
   const handlePageChange = (path: string) => {
@@ -97,7 +108,11 @@ export const DefaultLayout = () => {
     }}>
       {/* Sidebar - Fixed width */}
       <Box sx={{ width: 280, flexShrink: 0 }}>
-        <Sidebar onPageChange={handlePageChange} />
+        <Sidebar 
+          onPageChange={handlePageChange} 
+          user={user}
+          onLogout={onLogout}
+        />
       </Box>
       
       {/* Main Content Area */}
