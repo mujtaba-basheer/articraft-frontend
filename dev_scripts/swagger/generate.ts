@@ -32,7 +32,7 @@ async function generateService(service: ApiService, rootPath: string) {
       `rm -r ${codegenPath}; mkdir -p ${codegenPath} && openapi-generator-cli generate -i ${path.join(
         swaggerFolderPath,
         "swagger.json"
-      )} -o ${codegenPath} -g typescript-axios && prettier "${codegenPath}/**/*.ts|tsx|js|css|json" --write`,
+      )} -o ${codegenPath} -g typescript-axios -a BearerToken && prettier "${codegenPath}/**/*.ts|tsx|js|css|json" --write`,
       { shell: "bash", stdio: "inherit" }
     )
   );
