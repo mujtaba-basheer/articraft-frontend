@@ -11,8 +11,9 @@ import {
   InputAdornment,
   IconButton,
   Link,
-  Chip,
   Fade,
+  Modal,
+  Backdrop,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { colors } from "../styles/colors";
@@ -79,6 +80,30 @@ const StyledTextField = styled(TextField)(() => ({
   },
 }));
 
+const OtpTextField = styled(TextField)(() => ({
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "8px",
+    backgroundColor: colors.baseWhite,
+    fontSize: "18px",
+    textAlign: "center",
+    "& input": {
+      textAlign: "center",
+      fontSize: "18px",
+      fontWeight: "600",
+      letterSpacing: "8px",
+    },
+    "& fieldset": {
+      borderColor: colors.gray200,
+    },
+    "&:hover fieldset": {
+      borderColor: colors.gray300,
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: colors.blue500,
+    },
+  },
+}));
+
 const ContinueButton = styled(Button)(() => ({
   height: "48px",
   borderRadius: "8px",
@@ -88,7 +113,7 @@ const ContinueButton = styled(Button)(() => ({
   background: `linear-gradient(135deg, ${colors.blue500} 0%, ${colors.blue600} 100%)`,
   boxShadow: "0 4px 12px 0 rgba(59, 130, 246, 0.15)",
   "&:hover": {
-    background: `linear-gradient(135deg, ${colors.blue600} 0%, ${colors.blue700} 100%)`,
+    background: `linear-gradient(135deg, ${colors.blue600} 0%, ${colors.blue700} 100())`,
     boxShadow: "0 6px 16px 0 rgba(59, 130, 246, 0.2)",
   },
   "&:disabled": {
@@ -112,62 +137,146 @@ const GoogleButton = styled(Button)(() => ({
   },
 }));
 
-const SelectableCard = styled(Card)<{ selected?: boolean }>(({ selected }) => ({
-  padding: "20px",
-  borderRadius: "12px",
-  border: selected ? `2px solid ${colors.blue500}` : `1px solid ${colors.gray200}`,
-  backgroundColor: selected ? colors.blue50 : colors.baseWhite,
-  cursor: "pointer",
-  transition: "all 0.2s ease",
+const ResendButton = styled(Button)(() => ({
+  fontSize: "14px",
+  fontWeight: 500,
+  textTransform: "none",
+  color: colors.blue600,
+  backgroundColor: "transparent",
+  padding: "4px 8px",
   "&:hover": {
-    borderColor: colors.blue300,
-    backgroundColor: selected ? colors.blue50 : colors.gray50,
+    backgroundColor: colors.blue50,
+  },
+  "&:disabled": {
+    color: colors.gray400,
   },
 }));
 
-const IntegrationCard = styled(Box)<{ connected?: boolean }>(({ connected }) => ({
-  padding: "24px",
-  borderRadius: "12px",
-  border: connected ? `2px solid ${colors.green500}` : `2px dashed ${colors.gray300}`,
-  backgroundColor: connected ? colors.green50 : colors.baseWhite,
-  textAlign: "center",
-  position: "relative",
-  transition: "all 0.2s ease",
-  minHeight: "120px",
+const SuccessModal = styled(Modal)(() => ({
   display: "flex",
-  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
+  padding: "20px",
 }));
 
-const ProgressDots = styled(Box)(() => ({
-  display: "flex",
-  justifyContent: "center",
-  gap: "8px",
-  marginBottom: "24px",
+const SuccessCard = styled(Card)(() => ({
+  width: "100%",
+  maxWidth: "400px",
+  borderRadius: "20px",
+  border: `2px solid ${colors.green200}`,
+  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+  backgroundColor: colors.baseWhite,
+  position: "relative",
+  overflow: "visible",
 }));
 
-const Dot = styled(Box)<{ active?: boolean }>(({ active }) => ({
-  width: "8px",
-  height: "8px",
+const SuccessIconContainer = styled(Box)(() => ({
+  position: "absolute",
+  top: "-30px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: "60px",
+  height: "60px",
   borderRadius: "50%",
-  backgroundColor: active ? colors.blue500 : colors.gray300,
+  background: `linear-gradient(135deg, ${colors.green500} 0%, ${colors.green600} 100%)`,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 8px 20px 0 rgba(34, 197, 94, 0.3)",
+}));
+
+const CelebrationContainer = styled(Box)(() => ({
+  position: "absolute",
+  top: "-40px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: "80px",
+  height: "80px",
+  borderRadius: "50%",
+  background: `radial-gradient(circle, ${colors.green100} 0%, transparent 70%)`,
+  animation: "celebrate 2s ease-in-out infinite",
+  "@keyframes celebrate": {
+    "0%, 100%": {
+      transform: "translateX(-50%) scale(1)",
+      opacity: 0.3,
+    },
+    "50%": {
+      transform: "translateX(-50%) scale(1.2)",
+      opacity: 0.6,
+    },
+  },
+}));
+
+const SuccessButton = styled(Button)(() => ({
+  height: "48px",
+  borderRadius: "12px",
+  fontSize: "16px",
+  fontWeight: 600,
+  textTransform: "none",
+  background: `linear-gradient(135deg, ${colors.green500} 0%, ${colors.green600} 100())`,
+  color: colors.baseWhite,
+  boxShadow: "0 4px 12px 0 rgba(34, 197, 94, 0.25)",
+  "&:hover": {
+    background: `linear-gradient(135deg, ${colors.green600} 0%, ${colors.green700} 100())`,
+    boxShadow: "0 6px 16px 0 rgba(34, 197, 94, 0.35)",
+    transform: "translateY(-1px)",
+  },
   transition: "all 0.2s ease",
 }));
 
 const FooterContainer = styled(Box)(() => ({
- position: "fixed",
- left: "50%",
- transform: "translateX(-50%)",
- display: "flex",
- alignItems: "center",
- justifyContent: "space-between",
- width: "calc(100% - 40px)",
- maxWidth: "500px",
- color: "rgba(255, 255, 255, 0.8)",
- fontSize: "12px",
- zIndex: 1,
+  position: "fixed",
+  bottom: "20px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "calc(100% - 40px)",
+  maxWidth: "500px",
+  color: "rgba(255, 255, 255, 0.8)",
+  fontSize: "12px",
+  zIndex: 1,
 }));
+
+const SuccessCheckIcon = () => (
+  <Box
+    component="svg"
+    sx={{ width: 32, height: 32, color: colors.baseWhite }}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+  </Box>
+);
+
+const SparkleIcon = ({ delay = 0 }: { delay?: number }) => (
+  <Box
+    component="svg"
+    sx={{ 
+      width: 16, 
+      height: 16, 
+      color: colors.yellow400,
+      position: "absolute",
+      animation: `sparkle 2s ease-in-out infinite`,
+      animationDelay: `${delay}s`,
+      "@keyframes sparkle": {
+        "0%, 100%": {
+          transform: "scale(0) rotate(0deg)",
+          opacity: 0,
+        },
+        "50%": {
+          transform: "scale(1) rotate(180deg)",
+          opacity: 1,
+        },
+      },
+    }}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
+  </Box>
+);
 
 // Icons
 const EyeIcon = ({ isVisible }: { isVisible: boolean }) => (
@@ -210,150 +319,176 @@ const GoogleIcon = () => (
   </Box>
 );
 
-const CheckIcon = () => (
+const MailIcon = () => (
   <Box
     component="svg"
-    sx={{ width: 16, height: 16, color: colors.green600 }}
+    sx={{ width: 48, height: 48, color: colors.blue500, mb: 2 }}
     viewBox="0 0 24 24"
     fill="currentColor"
   >
-    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-  </Box>
-);
-
-const AddIcon = () => (
-  <Box
-    component="svg"
-    sx={{ width: 24, height: 24, color: colors.gray400 }}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-  </Box>
-);
-
-const UserIcon = () => (
-  <Box
-    component="svg"
-    sx={{ width: 24, height: 24, color: colors.gray600 }}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
   </Box>
 );
 
 // Step interfaces
 interface SignupData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
-  organizationGoal: string;
-  selectedChannels: string[];
-  setupType: string;
-  organizationName: string;
-  organizationDescription: string;
-  brandLogo?: File;
 }
 
 interface SignupFlowProps {
-  onSignup: (data: SignupData) => void;
+  onSignup: (userData: { 
+    email: string; 
+    firstName: string; 
+    lastName: string;
+  }) => void;
   onBackToLogin: () => void;
 }
 
 export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // 1: Signup, 2: OTP Verification
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const [signupData, setSignupData] = useState<SignupData>({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
-    organizationGoal: "",
-    selectedChannels: [],
-    setupType: "",
-    organizationName: "",
-    organizationDescription: "",
   });
-
-  const totalSteps = 6;
-
-  const organizationGoals = [
-    "Increase E-Commerce Sales",
-    "Boost Brand Awareness",
-    "Generate Leads",
-    "App installs"
-  ];
-
-  const adChannels = [
-    { name: "Google ads", icon: "🔍", color: "#4285F4" },
-    { name: "Meta ads", icon: "📘", color: "#1877F2", selected: true },
-    { name: "Snapchat ads", icon: "👻", color: "#FFFC00" },
-    { name: "TikTok ads", icon: "🎵", color: "#000000" },
-    { name: "LinkedIn ads", icon: "💼", color: "#0077B5" },
-    { name: "Others", icon: "•••", color: "#6B7280" }
-  ];
-
-  const integrations = [
-    { name: "Shopify", icon: "🛍️", connected: true },
-    { name: "Meta", icon: "📘", connected: false },
-    { name: "Google Ads", icon: "🔍", connected: false },
-    { name: "Google Analytics 4", icon: "📊", connected: false },
-    { name: "TikTok", icon: "🎵", connected: false },
-    { name: "Amazon Ads", icon: "📦", connected: false }
-  ];
-
-  const setupTypes = [
-    { id: "self", label: "Self", icon: <UserIcon /> },
-    { id: "team", label: "Team", icon: <UserIcon />, selected: true },
-    { id: "client", label: "Client", icon: <UserIcon /> }
-  ];
-
-  const handleNext = () => {
-    if (step < totalSteps) {
-      setStep(step + 1);
-    } else {
-      handleSubmit();
-    }
-  };
-
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    setError("");
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    try {
-      onSignup(signupData);
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
-
-    setIsLoading(false);
-  };
-
-  const handleGoogleSignup = () => {
-    onSignup({
-      name: "Google User",
-      email: "user@gmail.com",
-      password: "",
-      organizationGoal: "Increase E-Commerce Sales",
-      selectedChannels: ["Meta ads"],
-      setupType: "team",
-      organizationName: "Google Company",
-      organizationDescription: "A company that signed up with Google"
-    });
-  };
 
   const updateSignupData = (updates: Partial<SignupData>) => {
     setSignupData(prev => ({ ...prev, ...updates }));
   };
 
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("https://looptrack.up.railway.app/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: signupData.firstName,
+          lastName: signupData.lastName,
+          email: signupData.email,
+          password: signupData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Move to OTP verification step
+        setStep(2);
+      } else {
+        setError(data.message || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError("Unable to connect to the server. Please check your connection and try again.");
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleOtpVerification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("https://looptrack.up.railway.app/api/auth/verify-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: signupData.email,
+          otp: otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.result) {
+        // OTP verified successfully, show success modal
+        setShowSuccessModal(true);
+        
+        // Auto-proceed to dashboard after 3 seconds
+        setTimeout(() => {
+          onSignup({
+            email: signupData.email,
+            firstName: signupData.firstName,
+            lastName: signupData.lastName,
+          });
+        }, 3000);
+      } else {
+        setError("Invalid OTP. Please check your code and try again.");
+      }
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setError("Unable to verify OTP. Please try again.");
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+
+    setError("");
+    setResendCooldown(60); // 60 second cooldown
+
+    try {
+      // Call signup again to resend OTP
+      await fetch("https://looptrack.up.railway.app/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: signupData.firstName,
+          lastName: signupData.lastName,
+          email: signupData.email,
+          password: signupData.password,
+        }),
+      });
+
+      // Start cooldown timer
+      const timer = setInterval(() => {
+        setResendCooldown(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setResendCooldown(0);
+    }
+  };
+
+  const handleGoogleSignup = () => {
+    // Redirect to Google OAuth endpoint
+    window.location.href = "https://looptrack.up.railway.app/api/auth/google";
+  };
+
   // Step 1: Create Account
-  const renderStep1 = () => (
+  const renderSignupStep = () => (
     <Fade in={true}>
       <Box>
         <LogoSection>
@@ -394,72 +529,91 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
           </Alert>
         )}
 
-        <Stack spacing={3}>
-          <StyledTextField
-            fullWidth
-            label="Name*"
-            value={signupData.name}
-            onChange={(e) => updateSignupData({ name: e.target.value })}
-            placeholder="Enter your name"
-            required
-          />
+        <form onSubmit={handleSignup}>
+          <Stack spacing={3}>
+            <Box sx={{ display: "flex", gap: "12px" }}>
+              <StyledTextField
+                fullWidth
+                label="First Name*"
+                value={signupData.firstName}
+                onChange={(e) => updateSignupData({ firstName: e.target.value })}
+                placeholder="Enter your first name"
+                required
+              />
+              <StyledTextField
+                fullWidth
+                label="Last Name*"
+                value={signupData.lastName}
+                onChange={(e) => updateSignupData({ lastName: e.target.value })}
+                placeholder="Enter your last name"
+                required
+              />
+            </Box>
 
-          <StyledTextField
-            fullWidth
-            label="Email*"
-            type="email"
-            value={signupData.email}
-            onChange={(e) => updateSignupData({ email: e.target.value })}
-            placeholder="Enter your email"
-            required
-          />
-
-          <Box>
             <StyledTextField
               fullWidth
-              label="Password*"
-              type={showPassword ? "text" : "password"}
-              value={signupData.password}
-              onChange={(e) => updateSignupData({ password: e.target.value })}
-              placeholder="Create a password"
+              label="Email*"
+              type="email"
+              value={signupData.email}
+              onChange={(e) => updateSignupData({ email: e.target.value })}
+              placeholder="Enter your email"
               required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      size="small"
-                    >
-                      <EyeIcon isVisible={showPassword} />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
             />
-            <Typography sx={{ fontSize: "12px", color: colors.gray500, mt: 1 }}>
-              Must be at least 8 characters.
-            </Typography>
-          </Box>
 
-          <ContinueButton
-            fullWidth
-            variant="contained"
-            onClick={handleNext}
-            disabled={!signupData.name || !signupData.email || signupData.password.length < 8}
-          >
-            Get Started
-          </ContinueButton>
+            <Box>
+              <StyledTextField
+                fullWidth
+                label="Password*"
+                type={showPassword ? "text" : "password"}
+                value={signupData.password}
+                onChange={(e) => updateSignupData({ password: e.target.value })}
+                placeholder="Create a password"
+                required
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        size="small"
+                      >
+                        <EyeIcon isVisible={showPassword} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography sx={{ fontSize: "12px", color: colors.gray500, mt: 1 }}>
+                Must be at least 8 characters.
+              </Typography>
+            </Box>
 
-          <GoogleButton
-            fullWidth
-            variant="outlined"
-            onClick={handleGoogleSignup}
-          >
-            <GoogleIcon />
-            Sign up with Google
-          </GoogleButton>
-        </Stack>
+            <ContinueButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              disabled={
+                isLoading || 
+                !signupData.firstName || 
+                !signupData.lastName || 
+                !signupData.email || 
+                signupData.password.length < 8
+              }
+            >
+              {isLoading ? "Creating Account..." : "Get Started"}
+            </ContinueButton>
+
+            <GoogleButton
+              fullWidth
+              variant="outlined"
+              onClick={handleGoogleSignup}
+              disabled={isLoading}
+            >
+              <GoogleIcon />
+              Sign up with Google
+            </GoogleButton>
+          </Stack>
+        </form>
 
         <Typography
           sx={{
@@ -487,552 +641,304 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     </Fade>
   );
 
-  // Step 2: Choose Organization Goal
-  const renderStep2 = () => (
-    <Fade in={true}>
-      <Box>
-        <ProgressDots>
-          {[...Array(totalSteps)].map((_, i) => (
-            <Dot key={i} active={i === 0} />
-          ))}
-        </ProgressDots>
+  // Success Modal
+  const renderSuccessModal = () => (
+    <SuccessModal
+      open={showSuccessModal}
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        style: {
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(8px)',
+        },
+      }}
+    >
+      <Fade in={showSuccessModal}>
+        <Box sx={{ position: "relative" }}>
+          {/* Sparkle Effects */}
+          <Box sx={{ position: "absolute", top: "10px", left: "50px" }}>
+            <SparkleIcon delay={0} />
+          </Box>
+          <Box sx={{ position: "absolute", top: "30px", right: "60px" }}>
+            <SparkleIcon delay={0.5} />
+          </Box>
+          <Box sx={{ position: "absolute", bottom: "60px", left: "30px" }}>
+            <SparkleIcon delay={1} />
+          </Box>
+          <Box sx={{ position: "absolute", bottom: "40px", right: "40px" }}>
+            <SparkleIcon delay={1.5} />
+          </Box>
 
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: "28px",
-            fontWeight: 700,
-            color: colors.gray900,
-            textAlign: "center",
-            marginBottom: "16px",
-          }}
-        >
-          Choose Your Organization Goal
-        </Typography>
+          <SuccessCard>
+            {/* Celebration Animation */}
+            <CelebrationContainer />
+            
+            {/* Success Icon */}
+            <SuccessIconContainer>
+              <SuccessCheckIcon />
+            </SuccessIconContainer>
 
-        <Typography
-          sx={{
-            fontSize: "16px",
-            color: colors.gray600,
-            textAlign: "center",
-            marginBottom: "32px",
-            lineHeight: 1.5,
-          }}
-        >
-          Select the primary goal for your organization to tailor your dashboard and integrations. You can switch between Ecommerce Sales & Lead Generation anytime, ensuring you have the tools & insights you need.
-        </Typography>
+            <CardContent sx={{ padding: "60px 40px 40px 40px", textAlign: "center" }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: colors.gray900,
+                  marginBottom: "12px",
+                }}
+              >
+                Welcome to LoopTrack! 🎉
+              </Typography>
 
-        <Stack spacing={2} sx={{ marginBottom: "32px" }}>
-          {organizationGoals.map((goal) => (
-            <SelectableCard
-              key={goal}
-              selected={signupData.organizationGoal === goal}
-              onClick={() => updateSignupData({ organizationGoal: goal })}
-            >
               <Typography
                 sx={{
                   fontSize: "16px",
-                  fontWeight: 500,
-                  color: colors.gray800,
-                  textAlign: "center",
+                  color: colors.gray600,
+                  lineHeight: 1.6,
+                  marginBottom: "8px",
                 }}
               >
-                {goal}
+                Hi {signupData.firstName}! Your account has been created successfully.
               </Typography>
-            </SelectableCard>
-          ))}
-        </Stack>
 
-        <ContinueButton
-          fullWidth
-          variant="contained"
-          onClick={handleNext}
-          disabled={!signupData.organizationGoal}
-          endIcon={<Box component="span" sx={{ fontSize: "16px" }}>→</Box>}
-        >
-          Continue
-        </ContinueButton>
-      </Box>
-    </Fade>
-  );
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                  color: colors.gray500,
+                  marginBottom: "32px",
+                }}
+              >
+                Get ready to unlock powerful insights for your marketing campaigns.
+              </Typography>
 
-  // Step 3: Select Channels
-  const renderStep3 = () => (
-    <Fade in={true}>
-      <Box>
-        <ProgressDots>
-          {[...Array(totalSteps)].map((_, i) => (
-            <Dot key={i} active={i === 1} />
-          ))}
-        </ProgressDots>
-
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: colors.gray900,
-            textAlign: "center",
-            marginBottom: "16px",
-          }}
-        >
-          Which paid media channels do you use for your digital marketing needs?
-        </Typography>
-
-        <Typography
-          sx={{
-            fontSize: "16px",
-            color: colors.gray600,
-            textAlign: "center",
-            marginBottom: "32px",
-          }}
-        >
-          This insight assists us in integrating LoopTrack seamlessly with your existing marketing channels.
-        </Typography>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-            marginBottom: "32px",
-          }}
-        >
-          {adChannels.map((channel) => (
-            <SelectableCard
-              key={channel.name}
-              selected={signupData.selectedChannels.includes(channel.name)}
-              onClick={() => {
-                const isSelected = signupData.selectedChannels.includes(channel.name);
-                if (isSelected) {
-                  updateSignupData({
-                    selectedChannels: signupData.selectedChannels.filter(c => c !== channel.name)
-                  });
-                } else {
-                  updateSignupData({
-                    selectedChannels: [...signupData.selectedChannels, channel.name]
-                  });
-                }
-              }}
-            >
-              <Stack alignItems="center" spacing={1}>
-                <Box sx={{ fontSize: "24px" }}>{channel.icon}</Box>
+              <Box
+                sx={{
+                  backgroundColor: colors.green50,
+                  borderRadius: "12px",
+                  padding: "20px",
+                  marginBottom: "32px",
+                  border: `1px solid ${colors.green200}`,
+                }}
+              >
                 <Typography
                   sx={{
                     fontSize: "14px",
-                    fontWeight: 500,
-                    color: colors.gray800,
+                    fontWeight: 600,
+                    color: colors.green700,
+                    marginBottom: "8px",
                   }}
                 >
-                  {channel.name}
+                  🚀 What's next?
                 </Typography>
-              </Stack>
-            </SelectableCard>
-          ))}
-        </Box>
+                <Typography
+                  sx={{
+                    fontSize: "13px",
+                    color: colors.green600,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  You'll be redirected to your dashboard where you can start connecting your marketing channels and exploring powerful analytics.
+                </Typography>
+              </Box>
 
-        <ContinueButton
-          fullWidth
-          variant="contained"
-          onClick={handleNext}
-          disabled={signupData.selectedChannels.length === 0}
-          endIcon={<Box component="span" sx={{ fontSize: "16px" }}>→</Box>}
-        >
-          Continue
-        </ContinueButton>
-      </Box>
-    </Fade>
+              <SuccessButton
+                fullWidth
+                onClick={() => {
+                  onSignup({
+                    email: signupData.email,
+                    firstName: signupData.firstName,
+                    lastName: signupData.lastName,
+                  });
+                }}
+                endIcon={
+                  <Box
+                    component="span"
+                    sx={{ 
+                      fontSize: "16px",
+                      marginLeft: "4px"
+                    }}
+                  >
+                    →
+                  </Box>
+                }
+              >
+                Go to Dashboard
+              </SuccessButton>
+
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  color: colors.gray400,
+                  marginTop: "16px",
+                }}
+              >
+                Redirecting automatically in a few seconds...
+              </Typography>
+            </CardContent>
+          </SuccessCard>
+        </Box>
+      </Fade>
+    </SuccessModal>
   );
 
-  // Step 4: Setup Progress
-  const renderStep4 = () => (
+  // Step 2: OTP Verification
+  const renderOtpStep = () => (
     <Fade in={true}>
       <Box>
-        <ProgressDots>
-          {[...Array(totalSteps)].map((_, i) => (
-            <Dot key={i} active={i === 2} />
-          ))}
-        </ProgressDots>
+        <LogoSection>
+          <Logo>L</Logo>
+          <Typography sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}>
+            LoopTrack
+          </Typography>
+        </LogoSection>
 
-        <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 2 }}>
-            <Box
-              component="span"
-              sx={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: colors.blue500,
-                animation: "pulse 1.5s ease-in-out infinite",
-                "@keyframes pulse": {
-                  "0%": {
-                    transform: "scale(0.95)",
-                    opacity: 1,
-                  },
-                  "50%": {
-                    transform: "scale(1.05)",
-                    opacity: 0.7,
-                  },
-                  "100%": {
-                    transform: "scale(0.95)",
-                    opacity: 1,
-                  },
-                },
-              }}
-            />
-            <Typography sx={{ fontSize: "14px", color: colors.blue600, fontWeight: 500 }}>
-              Waiting for connections
-            </Typography>
-          </Box>
+        <Box sx={{ textAlign: "center", marginBottom: "32px" }}>
+          <MailIcon />
+          <Typography
+            variant="h4"
+            sx={{
+              fontSize: "24px",
+              fontWeight: 700,
+              color: colors.gray900,
+              marginBottom: "8px",
+            }}
+          >
+            Check your email
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              color: colors.gray600,
+              lineHeight: 1.5,
+            }}
+          >
+            We sent a verification code to
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              fontWeight: 600,
+              color: colors.gray900,
+              marginTop: "4px",
+            }}
+          >
+            {signupData.email}
+          </Typography>
         </Box>
 
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: colors.gray900,
-            textAlign: "center",
-            marginBottom: "16px",
-          }}
-        >
-          You're almost ready to use Strique to its fullest!
-        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ marginBottom: "24px", borderRadius: "8px" }}>
+            {error}
+          </Alert>
+        )}
 
-        <Typography
-          sx={{
-            fontSize: "16px",
-            color: colors.gray600,
-            textAlign: "center",
-            marginBottom: "32px",
-            lineHeight: 1.5,
-          }}
-        >
-          Integrate with marketing tools such as Google Ads, Meta Ads, and other platforms that apply. We will notify you once the authentication is complete
-        </Typography>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-            marginBottom: "32px",
-          }}
-        >
-          {integrations.map((integration) => (
-            <IntegrationCard key={integration.name} connected={integration.connected}>
-              {integration.connected && (
-                <Chip
-                  label="Connected"
-                  size="small"
-                  icon={<CheckIcon />}
-                  sx={{
-                    position: "absolute",
-                    top: "8px",
-                    right: "8px",
-                    backgroundColor: colors.green100,
-                    color: colors.green700,
-                    fontSize: "10px",
-                    height: "20px",
-                  }}
-                />
-              )}
-              
-              <Box sx={{ fontSize: "32px", marginBottom: "8px" }}>
-                {integration.icon}
-              </Box>
-              
+        <form onSubmit={handleOtpVerification}>
+          <Stack spacing={3}>
+            <Box>
               <Typography
                 sx={{
                   fontSize: "14px",
                   fontWeight: 500,
-                  color: colors.gray800,
+                  color: colors.gray700,
+                  marginBottom: "8px",
+                  textAlign: "center",
                 }}
               >
-                {integration.name}
+                Enter verification code
               </Typography>
-              
-              {!integration.connected && (
-                <IconButton
-                  sx={{
-                    position: "absolute",
-                    bottom: "8px",
-                    right: "8px",
-                    backgroundColor: colors.gray100,
-                    width: "32px",
-                    height: "32px",
-                    "&:hover": {
-                      backgroundColor: colors.gray200,
-                    },
-                  }}
-                >
-                  <AddIcon />
-                </IconButton>
-              )}
-            </IntegrationCard>
-          ))}
-        </Box>
+              <OtpTextField
+                fullWidth
+                value={otp}
+                onChange={(e) => {
+                  const value = e.target.value.slice(0, 6);
+                  setOtp(value);
+                }}
+                placeholder="000000"
+                inputProps={{ 
+                  maxLength: 6,
+                }}
+              />
+            </Box>
 
-        <ContinueButton
-          fullWidth
-          variant="contained"
-          onClick={handleNext}
-          endIcon={<Box component="span" sx={{ fontSize: "16px" }}>→</Box>}
-        >
-          Finish Setup
-        </ContinueButton>
-      </Box>
-    </Fade>
-  );
+            <ContinueButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              disabled={isLoading || otp.length !== 6}
+            >
+              {isLoading ? "Verifying..." : "Verify Email"}
+            </ContinueButton>
+          </Stack>
+        </form>
 
-  // Step 5: Setup Type
-  const renderStep5 = () => (
-    <Fade in={true}>
-      <Box>
-        <ProgressDots>
-          {[...Array(totalSteps)].map((_, i) => (
-            <Dot key={i} active={i === 3} />
-          ))}
-        </ProgressDots>
-
-        <Box sx={{ textAlign: "right", marginBottom: "16px" }}>
-          <Link
-            onClick={handleNext}
+        <Box sx={{ textAlign: "center", marginTop: "24px" }}>
+          <Typography
             sx={{
               fontSize: "14px",
               color: colors.gray600,
+              marginBottom: "8px",
+            }}
+          >
+            Didn't receive the code?
+          </Typography>
+          <ResendButton
+            onClick={handleResendOtp}
+            disabled={resendCooldown > 0}
+          >
+            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"}
+          </ResendButton>
+        </Box>
+
+        <Typography
+          sx={{
+            textAlign: "center",
+            marginTop: "16px",
+            fontSize: "14px",
+            color: colors.gray600,
+          }}
+        >
+          Want to change email?{" "}
+          <Link
+            onClick={() => setStep(1)}
+            sx={{
+              color: colors.blue600,
               textDecoration: "none",
+              fontWeight: 500,
               cursor: "pointer",
               "&:hover": { textDecoration: "underline" },
             }}
           >
-            Skip →
+            Go back
           </Link>
-        </Box>
-
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: colors.gray900,
-            textAlign: "center",
-            marginBottom: "16px",
-          }}
-        >
-          Who are you setting up LoopTrack for?
         </Typography>
-
-        <Typography
-          sx={{
-            fontSize: "16px",
-            color: colors.gray600,
-            textAlign: "center",
-            marginBottom: "32px",
-          }}
-        >
-          Knowing this enables us to optimize LoopTrack for your preferences better
-        </Typography>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "16px",
-            marginBottom: "32px",
-          }}
-        >
-          {setupTypes.map((type) => (
-            <SelectableCard
-              key={type.id}
-              selected={signupData.setupType === type.id}
-              onClick={() => updateSignupData({ setupType: type.id })}
-            >
-              <Stack alignItems="center" spacing={2}>
-                {type.icon}
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    color: colors.gray800,
-                  }}
-                >
-                  {type.label}
-                </Typography>
-              </Stack>
-            </SelectableCard>
-          ))}
-        </Box>
-
-        <ContinueButton
-          fullWidth
-          variant="contained"
-          onClick={handleNext}
-          endIcon={<Box component="span" sx={{ fontSize: "16px" }}>→</Box>}
-        >
-          Continue
-        </ContinueButton>
       </Box>
     </Fade>
   );
-
-  // Step 6: Organization Details
-  const renderStep6 = () => (
-    <Fade in={true}>
-      <Box>
-        <ProgressDots>
-          {[...Array(totalSteps)].map((_, i) => (
-            <Dot key={i} active={i === 4} />
-          ))}
-        </ProgressDots>
-
-        <Typography
-          variant="h4"
-          sx={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: colors.gray900,
-            textAlign: "center",
-            marginBottom: "16px",
-          }}
-        >
-          Tell us about your organisation
-        </Typography>
-
-        <Typography
-          sx={{
-            fontSize: "16px",
-            color: colors.gray600,
-            textAlign: "center",
-            marginBottom: "32px",
-          }}
-        >
-          Sharing a bit about your company helps us align LoopTrack with your brand identity and values.
-        </Typography>
-
-        <Stack spacing={3}>
-          <StyledTextField
-            fullWidth
-            label="Organisation's Name *"
-            value={signupData.organizationName}
-            onChange={(e) => updateSignupData({ organizationName: e.target.value })}
-            placeholder="Enter your answer"
-            required
-          />
-
-          <StyledTextField
-            fullWidth
-            multiline
-            rows={4}
-            value={signupData.organizationDescription}
-            onChange={(e) => updateSignupData({ organizationDescription: e.target.value })}
-            placeholder="Write a description, this helps us serve you better"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                alignItems: "flex-start",
-              },
-            }}
-          />
-
-          <Box>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                fontWeight: 500,
-                color: colors.gray700,
-                marginBottom: "8px",
-              }}
-            >
-              Brand Logo
-            </Typography>
-            <Box
-              sx={{
-                border: `2px dashed ${colors.gray300}`,
-                borderRadius: "8px",
-                padding: "24px",
-                textAlign: "center",
-                backgroundColor: colors.gray50,
-                cursor: "pointer",
-                "&:hover": {
-                  borderColor: colors.gray400,
-                  backgroundColor: colors.gray100,
-                },
-              }}
-              onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e) => {
-                  const file = (e.target as HTMLInputElement).files?.[0];
-                  if (file) {
-                    updateSignupData({ brandLogo: file });
-                  }
-                };
-                input.click();
-              }}
-            >
-              <Typography sx={{ fontSize: "14px", color: colors.gray600 }}>
-                {signupData.brandLogo ? signupData.brandLogo.name : "No File Chosen"}
-              </Typography>
-            </Box>
-            <Typography sx={{ fontSize: "12px", color: colors.gray500, mt: 1 }}>
-              jpg/ png/ jpeg files are accepted, maximum limit is 2 MB
-            </Typography>
-          </Box>
-        </Stack>
-
-        <Box sx={{ marginTop: "32px" }}>
-          <ContinueButton
-            fullWidth
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={!signupData.organizationName || isLoading}
-            endIcon={<Box component="span" sx={{ fontSize: "16px" }}>→</Box>}
-          >
-            {isLoading ? "Creating Account..." : "Continue"}
-          </ContinueButton>
-        </Box>
-      </Box>
-    </Fade>
-  );
-
-  const renderCurrentStep = () => {
-    switch (step) {
-      case 1:
-        return renderStep1();
-      case 2:
-        return renderStep2();
-      case 3:
-        return renderStep3();
-      case 4:
-        return renderStep4();
-      case 5:
-        return renderStep5();
-      case 6:
-        return renderStep6();
-      default:
-        return renderStep1();
-    }
-  };
 
   return (
-    <SignupContainer>
-      <Box sx={{ width: "100%", maxWidth: "500px", position: "relative" }}>
-        <SignupCard>
-          <CardContent sx={{ padding: "48px 40px" }}>
-            {renderCurrentStep()}
-          </CardContent>
-        </SignupCard>
+    <>
+      <SignupContainer>
+        <Box sx={{ width: "100%", maxWidth: "500px", position: "relative" }}>
+          <SignupCard>
+            <CardContent sx={{ padding: "48px 40px" }}>
+              {step === 1 ? renderSignupStep() : renderOtpStep()}
+            </CardContent>
+          </SignupCard>
 
-        <FooterContainer>
-          <Typography sx={{ fontSize: "12px" }}>
-            © LoopTrack 2025
-          </Typography>
-          <Typography sx={{ fontSize: "12px" }}>
-            help@looptrack.ai
-          </Typography>
-        </FooterContainer>
-      </Box>
-    </SignupContainer>
+          <FooterContainer>
+            <Typography sx={{ fontSize: "12px" }}>
+              © LoopTrack 2025
+            </Typography>
+            <Typography sx={{ fontSize: "12px" }}>
+              help@looptrack.ai
+            </Typography>
+          </FooterContainer>
+        </Box>
+      </SignupContainer>
+
+      {/* Success Modal */}
+      {renderSuccessModal()}
+    </>
   );
 };

@@ -6,6 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { colors } from "../styles";
 import {
   LineChart,
@@ -25,13 +26,19 @@ import { TopCampaigns } from "./TopCampaigns";
 import { MetaAdsOverview } from "./MetaAdsOverview";
 import { GoogleAdsOverview } from "./GoogleAdsOverview";
 
-const DashboardContainer = styled(Box)(() => ({
+const DashboardContainer = styled(Box)(({ theme }) => ({
   padding: "20px",
   backgroundColor: "#fafbfc",
   minHeight: "100%",
+  [theme.breakpoints.down('md')]: {
+    padding: "16px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: "12px",
+  },
 }));
 
-const MetricCard = styled(Card)(() => ({
+const MetricCard = styled(Card)(({ theme }) => ({
   borderRadius: "12px",
   border: `1px solid ${colors.gray200}`,
   boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
@@ -40,9 +47,12 @@ const MetricCard = styled(Card)(() => ({
   "&:hover": {
     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
   },
+  [theme.breakpoints.down('sm')]: {
+    borderRadius: "8px",
+  },
 }));
 
-const ChartCard = styled(Card)(() => ({
+const ChartCard = styled(Card)(({ theme }) => ({
   borderRadius: "12px",
   border: `1px solid ${colors.gray200}`,
   boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
@@ -51,54 +61,59 @@ const ChartCard = styled(Card)(() => ({
   "&:hover": {
     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
   },
+  [theme.breakpoints.down('lg')]: {
+    height: "380px",
+  },
+  [theme.breakpoints.down('md')]: {
+    height: "350px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: "300px",
+    borderRadius: "8px",
+  },
 }));
 
-const ChartHeader = styled(Box)(() => ({
+const ChartHeader = styled(Box)(({ theme }) => ({
   padding: "20px 20px 0 20px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  [theme.breakpoints.down('sm')]: {
+    padding: "16px 16px 0 16px",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "12px",
+  },
 }));
 
-const MetricsContainer = styled(Box)(() => ({
-  display: "flex",
+const MetricsContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
   gap: "24px",
   marginBottom: "24px",
-  "& > *": {
-    flex: "1",
-    minWidth: "0",
+  [theme.breakpoints.down('lg')]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "20px",
   },
-  "@media (max-width: 1200px)": {
-    flexWrap: "wrap",
-    "& > *": {
-      flex: "1 1 calc(50% - 12px)",
-      minWidth: "250px",
-    },
-  },
-  "@media (max-width: 768px)": {
-    "& > *": {
-      flex: "1 1 100%",
-    },
+  [theme.breakpoints.down('sm')]: {
+    gridTemplateColumns: "1fr",
+    gap: "16px",
+    marginBottom: "20px",
   },
 }));
 
-const ChartsContainer = styled(Box)(() => ({
-  display: "flex",
-  flexWrap: "wrap",
+const ChartsContainer = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "2fr 1fr",
   gap: "24px",
-  "& > *:first-of-type": {
-    flex: "2 1 600px",
-    minWidth: "500px",
+  marginBottom: "24px",
+  [theme.breakpoints.down('lg')]: {
+    gridTemplateColumns: "1fr",
+    gap: "20px",
   },
-  "& > *:last-of-type": {
-    flex: "1 1 300px",
-    minWidth: "300px",
-  },
-  "@media (max-width: 1024px)": {
-    "& > *": {
-      flex: "1 1 100%",
-      minWidth: "100%",
-    },
+  [theme.breakpoints.down('sm')]: {
+    gap: "16px",
+    marginBottom: "20px",
   },
 }));
 
@@ -171,7 +186,7 @@ const attributionData = [
   { name: "Other", value: 919.62, color: "#9c27b0", percentage: 2.1 },
 ];
 
-const TimeFilterButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
+const TimeFilterButton = styled(Button)<{ active?: boolean }>(({ active, theme }) => ({
   height: "32px",
   borderRadius: "6px",
   fontSize: "12px",
@@ -185,9 +200,17 @@ const TimeFilterButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
   "&:hover": {
     backgroundColor: colors.gray100,
   },
+  [theme.breakpoints.down('sm')]: {
+    height: "28px",
+    fontSize: "11px",
+    padding: "4px 8px",
+  },
 }));
 
 export const DashboardContent = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [hoveredSegment, setHoveredSegment] = useState<number | null>(null);
 
   const metrics = [
@@ -269,8 +292,8 @@ export const DashboardContent = () => {
       <MetricsContainer>
         {metrics.map((metric, index) => (
           <MetricCard key={index}>
-            <CardContent sx={{ padding: "20px" }}>
-              <Stack spacing={2}>
+            <CardContent sx={{ padding: { xs: "16px", sm: "20px" } }}>
+              <Stack spacing={{ xs: 1.5, sm: 2 }}>
                 {/* Header */}
                 <Stack
                   direction="row"
@@ -281,7 +304,7 @@ export const DashboardContent = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        fontSize: "14px",
+                        fontSize: { xs: "13px", sm: "14px" },
                         fontWeight: 500,
                         color: colors.gray600,
                       }}
@@ -300,7 +323,7 @@ export const DashboardContent = () => {
                   <Typography
                     variant="h3"
                     sx={{
-                      fontSize: "32px",
+                      fontSize: { xs: "24px", sm: "28px", md: "32px" },
                       fontWeight: 700,
                       color: colors.gray900,
                       lineHeight: 1,
@@ -311,7 +334,7 @@ export const DashboardContent = () => {
                     <Box
                       component="span"
                       sx={{
-                        fontSize: "24px",
+                        fontSize: { xs: "18px", sm: "20px", md: "24px" },
                         color: colors.gray500,
                         fontWeight: 400,
                       }}
@@ -331,7 +354,7 @@ export const DashboardContent = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontSize: "12px",
+                      fontSize: { xs: "11px", sm: "12px" },
                       fontWeight: 500,
                       color: metric.isPositive
                         ? colors.green600
@@ -343,11 +366,11 @@ export const DashboardContent = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontSize: "12px",
+                      fontSize: { xs: "11px", sm: "12px" },
                       color: colors.gray500,
                     }}
                   >
-                    {metric.changeText}
+                    {isMobile ? "past week" : metric.changeText}
                   </Typography>
                 </Stack>
               </Stack>
@@ -365,7 +388,7 @@ export const DashboardContent = () => {
               <Typography
                 variant="h6"
                 sx={{
-                  fontSize: "16px",
+                  fontSize: { xs: "14px", sm: "16px" },
                   fontWeight: 600,
                   color: colors.gray900,
                 }}
@@ -382,25 +405,28 @@ export const DashboardContent = () => {
               ))}
             </Stack>
           </ChartHeader>
-          <Box sx={{ padding: "0 20px 20px 20px", height: "320px" }}>
+          <Box sx={{ 
+            padding: { xs: "0 12px 12px 12px", sm: "0 20px 20px 20px" }, 
+            height: { xs: "240px", sm: "280px", md: "320px" }
+          }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={revenueData}>
+              <LineChart data={revenueData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={colors.gray200} />
                 <XAxis
                   dataKey="name"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: colors.gray500 }}
+                  tick={{ fontSize: isMobile ? 10 : 12, fill: colors.gray500 }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: colors.gray500 }}
+                  tick={{ fontSize: isMobile ? 10 : 12, fill: colors.gray500 }}
                   tickFormatter={(value) => `${value / 1000}K`}
                 />
                 <Tooltip
                   formatter={(value: any) => [
-                    `$${value.toLocaleString()}`,
+                    `${value.toLocaleString()}`,
                     "Revenue",
                   ]}
                   labelStyle={{ color: colors.gray900 }}
@@ -409,19 +435,19 @@ export const DashboardContent = () => {
                     border: `1px solid ${colors.gray200}`,
                     borderRadius: "8px",
                     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    fontSize: isMobile ? "12px" : "14px",
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="value"
                   stroke={colors.blue500}
-                  strokeWidth={3}
-                  dot={{ fill: colors.blue500, strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, stroke: colors.blue500, strokeWidth: 2 }}
+                  strokeWidth={isMobile ? 2 : 3}
+                  dot={{ fill: colors.blue500, strokeWidth: 2, r: isMobile ? 3 : 4 }}
+                  activeDot={{ r: isMobile ? 5 : 6, stroke: colors.blue500, strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
-            {/* Data point callout */}
           </Box>
         </ChartCard>
 
@@ -432,7 +458,7 @@ export const DashboardContent = () => {
               <Typography
                 variant="h6"
                 sx={{
-                  fontSize: "16px",
+                  fontSize: { xs: "14px", sm: "16px" },
                   fontWeight: 600,
                   color: colors.gray900,
                 }}
@@ -441,22 +467,24 @@ export const DashboardContent = () => {
               </Typography>
               <InfoIcon />
             </Stack>
-            <Button
-              sx={{
-                fontSize: "12px",
-                fontWeight: 500,
-                color: colors.gray600,
-                textTransform: "none",
-                padding: "4px 8px",
-              }}
-            >
-              Expand
-            </Button>
+            {!isMobile && (
+              <Button
+                sx={{
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  color: colors.gray600,
+                  textTransform: "none",
+                  padding: "4px 8px",
+                }}
+              >
+                Expand
+              </Button>
+            )}
           </ChartHeader>
           <Box
             sx={{
-              padding: "0 20px 20px 20px",
-              height: "320px",
+              padding: { xs: "0 12px 12px 12px", sm: "0 20px 20px 20px" },
+              height: { xs: "240px", sm: "280px", md: "320px" },
               position: "relative",
             }}
           >
@@ -466,8 +494,8 @@ export const DashboardContent = () => {
                   data={attributionData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={isMobile ? 40 : 60}
+                  outerRadius={isMobile ? 70 : 100}
                   paddingAngle={2}
                   dataKey="value"
                   onMouseEnter={handleMouseEnter}
@@ -502,6 +530,7 @@ export const DashboardContent = () => {
                     border: `1px solid ${colors.gray200}`,
                     borderRadius: "8px",
                     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    fontSize: isMobile ? "12px" : "14px",
                   }}
                 />
               </PieChart>
@@ -516,6 +545,7 @@ export const DashboardContent = () => {
                 transform: "translate(-50%, -50%)",
                 textAlign: "center",
                 transition: "all 0.3s ease",
+                pointerEvents: "none",
               }}
             >
               {displayData.isSegment ? (
@@ -523,7 +553,7 @@ export const DashboardContent = () => {
                 <>
                   <Typography
                     sx={{
-                      fontSize: "12px",
+                      fontSize: { xs: "10px", sm: "12px" },
                       fontWeight: 500,
                       color: colors.gray600,
                       marginBottom: "4px",
@@ -535,7 +565,7 @@ export const DashboardContent = () => {
                   </Typography>
                   <Typography
                     sx={{
-                      fontSize: "24px",
+                      fontSize: { xs: "16px", sm: "20px", md: "24px" },
                       fontWeight: 700,
                       color: displayData.color,
                       lineHeight: 1,
@@ -545,7 +575,7 @@ export const DashboardContent = () => {
                   </Typography>
                   <Typography
                     sx={{
-                      fontSize: "14px",
+                      fontSize: { xs: "12px", sm: "14px" },
                       fontWeight: 600,
                       color: colors.gray600,
                       marginTop: "4px",
@@ -559,7 +589,7 @@ export const DashboardContent = () => {
                 <>
                   <Typography
                     sx={{
-                      fontSize: "24px",
+                      fontSize: { xs: "16px", sm: "20px", md: "24px" },
                       fontWeight: 700,
                       color: colors.gray900,
                       lineHeight: 1,
@@ -568,7 +598,7 @@ export const DashboardContent = () => {
                     ${Math.floor(displayData.value).toLocaleString()}
                     <Box
                       component="span"
-                      sx={{ fontSize: "16px", color: colors.gray500 }}
+                      sx={{ fontSize: { xs: "12px", sm: "14px", md: "16px" }, color: colors.gray500 }}
                     >
                       .
                       {((displayData.value % 1) * 100)
@@ -586,7 +616,7 @@ export const DashboardContent = () => {
                     <ArrowUpIcon color={colors.green500} />
                     <Typography
                       sx={{
-                        fontSize: "11px",
+                        fontSize: { xs: "9px", sm: "11px" },
                         fontWeight: 500,
                         color: colors.green600,
                       }}
@@ -596,7 +626,7 @@ export const DashboardContent = () => {
                   </Stack>
                   <Typography
                     sx={{
-                      fontSize: "10px",
+                      fontSize: { xs: "8px", sm: "10px" },
                       color: colors.gray500,
                       marginTop: "2px",
                     }}
@@ -607,8 +637,8 @@ export const DashboardContent = () => {
               )}
             </Box>
 
-            {/* Dynamic callout that appears only when hovering */}
-            {hoveredSegment !== null && (
+            {/* Dynamic callout that appears only when hovering (desktop only) */}
+            {hoveredSegment !== null && !isMobile && (
               <Box
                 sx={{
                   position: "absolute",
@@ -663,8 +693,36 @@ export const DashboardContent = () => {
               </Box>
             )}
           </Box>
+
+          {/* Legend for mobile */}
+          {isMobile && (
+            <Box sx={{ px: 2, pb: 2 }}>
+              <Stack spacing={1}>
+                {attributionData.map((item) => (
+                  <Stack key={item.name} direction="row" alignItems="center" spacing={1}>
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        backgroundColor: item.color,
+                      }}
+                    />
+                    <Typography sx={{ fontSize: "12px", color: colors.gray700, flex: 1 }}>
+                      {item.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: "12px", fontWeight: 600, color: colors.gray900 }}>
+                      {item.percentage}%
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Box>
+          )}
         </ChartCard>
       </ChartsContainer>
+
+      {/* Additional Content - Import your existing components */}
       <AIInsights />
       <TopCampaigns />
       <MetaAdsOverview />
