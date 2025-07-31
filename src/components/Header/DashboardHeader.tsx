@@ -8,17 +8,29 @@ import Chip from "@mui/material/Chip";
 import Popover from "@mui/material/Popover";
 import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Collapse from "@mui/material/Collapse";
 import { styled } from "@mui/material/styles";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { colors } from "../../styles/colors";
 import { useState } from "react";
 
-const HeaderContainer = styled(Box)(() => ({
+const HeaderContainer = styled(Box)(({ theme }) => ({
   padding: "20px 32px",
   backgroundColor: colors.baseWhite,
   borderBottom: `1px solid ${colors.gray200}`,
+  [theme.breakpoints.down('lg')]: {
+    padding: "18px 24px",
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: "16px 20px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: "12px 16px",
+  },
 }));
 
-const SearchField = styled(TextField)(() => ({
+const SearchField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
     backgroundColor: colors.baseWhite,
     borderRadius: "8px",
@@ -46,17 +58,41 @@ const SearchField = styled(TextField)(() => ({
       opacity: 1,
     },
   },
+  [theme.breakpoints.down('md')]: {
+    "& .MuiOutlinedInput-root": {
+      height: "36px",
+      fontSize: "13px",
+    },
+    "& .MuiInputBase-input": {
+      padding: "8px 12px",
+      fontSize: "13px",
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    "& .MuiOutlinedInput-root": {
+      height: "32px",
+      fontSize: "12px",
+    },
+    "& .MuiInputBase-input": {
+      padding: "6px 10px",
+      fontSize: "12px",
+    },
+  },
 }));
 
-const DatePickerPopover = styled(Paper)(() => ({
+const DatePickerPopover = styled(Paper)(({ theme }) => ({
   padding: "16px",
   minWidth: "320px",
   borderRadius: "8px",
   border: `1px solid ${colors.gray200}`,
   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+  [theme.breakpoints.down('sm')]: {
+    minWidth: "280px",
+    padding: "12px",
+  },
 }));
 
-const DateInput = styled(TextField)(() => ({
+const DateInput = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
     backgroundColor: colors.baseWhite,
     borderRadius: "6px",
@@ -77,9 +113,18 @@ const DateInput = styled(TextField)(() => ({
     fontSize: "14px",
     color: colors.gray700,
   },
+  [theme.breakpoints.down('sm')]: {
+    "& .MuiOutlinedInput-root": {
+      fontSize: "13px",
+    },
+    "& .MuiInputBase-input": {
+      padding: "7px 10px",
+      fontSize: "13px",
+    },
+  },
 }));
 
-const QuickDateButton = styled(Button)<{ selected?: boolean }>(({ selected }) => ({
+const QuickDateButton = styled(Button)<{ selected?: boolean }>(({ selected, theme }) => ({
   height: "32px",
   borderRadius: "6px",
   fontSize: "12px",
@@ -94,8 +139,14 @@ const QuickDateButton = styled(Button)<{ selected?: boolean }>(({ selected }) =>
     backgroundColor: selected ? colors.blue100 : colors.gray50,
     border: `1px solid ${selected ? colors.blue300 : colors.gray400}`,
   },
+  [theme.breakpoints.down('sm')]: {
+    height: "28px",
+    fontSize: "11px",
+    padding: "4px 8px",
+  },
 }));
-const TimeFilterChip = styled(Chip)<{ selected?: boolean }>(({ selected }) => ({
+
+const TimeFilterChip = styled(Chip)<{ selected?: boolean }>(({ selected, theme }) => ({
   height: "40px",
   borderRadius: "8px",
   fontSize: "14px",
@@ -113,9 +164,25 @@ const TimeFilterChip = styled(Chip)<{ selected?: boolean }>(({ selected }) => ({
     paddingRight: "16px",
     fontWeight: 500,
   },
+  [theme.breakpoints.down('md')]: {
+    height: "36px",
+    fontSize: "13px",
+    "& .MuiChip-label": {
+      paddingLeft: "12px",
+      paddingRight: "12px",
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: "32px",
+    fontSize: "12px",
+    "& .MuiChip-label": {
+      paddingLeft: "10px",
+      paddingRight: "10px",
+    },
+  },
 }));
 
-const ActionButton = styled(Button)<{ buttonType?: 'primary' | 'secondary' }>(({ buttonType }) => ({
+const ActionButton = styled(Button)<{ buttonType?: 'primary' | 'secondary' }>(({ buttonType, theme }) => ({
   height: "40px",
   borderRadius: "8px",
   fontSize: "14px",
@@ -145,7 +212,36 @@ const ActionButton = styled(Button)<{ buttonType?: 'primary' | 'secondary' }>(({
       boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.1)",
     },
   }),
+  [theme.breakpoints.down('md')]: {
+    height: "36px",
+    fontSize: "13px",
+    padding: "8px 16px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: "32px",
+    fontSize: "12px",
+    padding: "6px 12px",
+    minWidth: "32px",
+    "& .MuiButton-startIcon": {
+      marginRight: "4px",
+      "& > *:first-of-type": {
+        fontSize: "14px",
+      },
+    },
+  },
 }));
+
+// Menu icon for mobile
+const MenuIcon = () => (
+  <Box
+    component="svg"
+    sx={{ width: 24, height: 24, color: colors.gray700 }}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+  </Box>
+);
 
 // Search icon component
 const SearchIcon = () => (
@@ -275,15 +371,21 @@ type PagePath = keyof typeof pageConfigs;
 
 interface DashboardHeaderProps {
   activePage?: PagePath;
+  onMenuToggle?: () => void;
 }
 
-export const DashboardHeader = ({ activePage = "/" }: DashboardHeaderProps) => {
+export const DashboardHeader = ({ activePage = "/", onMenuToggle }: DashboardHeaderProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const [selectedTimeFilter, setSelectedTimeFilter] = useState("24 Hours");
   const [searchValue, setSearchValue] = useState("");
   const [datePickerAnchor, setDatePickerAnchor] = useState<HTMLElement | null>(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedQuickDate, setSelectedQuickDate] = useState("Last 7 days");
+  const [showFilters, setShowFilters] = useState(true);
   
   const currentPageConfig = pageConfigs[activePage] || pageConfigs["/"];
 
@@ -394,84 +496,95 @@ export const DashboardHeader = ({ activePage = "/" }: DashboardHeaderProps) => {
   return (
     <HeaderContainer>
       {/* Title Section */}
-      <Stack spacing={3}>
+      <Stack spacing={isMobile ? 2 : 3}>
         {/* Title and Top Action Buttons Row */}
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="flex-start"
-          spacing={3}
+          spacing={2}
         >
-          {/* Left side - Title */}
-          <Box sx={{ flex: 1 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                fontSize: "32px",
-                fontWeight: 700,
-                color: colors.gray900,
-                lineHeight: 1.2,
-                marginBottom: "6px",
-                letterSpacing: "-0.025em",
-              }}
-            >
-              {currentPageConfig.title}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                fontSize: "16px",
-                color: colors.gray600,
-                lineHeight: 1.5,
-                maxWidth: "600px",
-              }}
-            >
-              {currentPageConfig.description}
-            </Typography>
-          </Box>
-
-          {/* Right side - Top Action Buttons */}
-          <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ flexShrink: 0 }}>
-            {/* Advanced Filters */}
-            <ActionButton
-              buttonType="secondary"
-              onClick={handleAdvancedFilters}
-              startIcon={<FilterIcon />}
-            >
-              Advanced Filters
-            </ActionButton>
-
-            {/* Export Report */}
-            <ActionButton
-              buttonType="secondary"
-              onClick={handleExportReport}
-              startIcon={<ExportIcon />}
-            >
-              Export Report
-            </ActionButton>
-
-            {/* AI Insights */}
-            <ActionButton
-              buttonType="primary"
-              onClick={handleAIInsights}
-              startIcon={<LightningIcon />}
-            >
-              AI Insights
-            </ActionButton>
+          {/* Left side - Menu button (mobile) + Title */}
+          <Stack direction="row" alignItems="center" spacing={isMobile ? 2 : 0} sx={{ flex: 1 }}>
+            {isMobile && (
+              <IconButton onClick={onMenuToggle} sx={{ p: 1 }}>
+                <MenuIcon />
+              </IconButton>
+            )}
+            <Box sx={{ flex: 1 }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontSize: { xs: "24px", sm: "28px", md: "32px" },
+                  fontWeight: 700,
+                  color: colors.gray900,
+                  lineHeight: 1.2,
+                  marginBottom: "6px",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                {currentPageConfig.title}
+              </Typography>
+              {!isSmall && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: { xs: "14px", sm: "16px" },
+                    color: colors.gray600,
+                    lineHeight: 1.5,
+                    maxWidth: "600px",
+                  }}
+                >
+                  {currentPageConfig.description}
+                </Typography>
+              )}
+            </Box>
           </Stack>
+
+          {/* Right side - Top Action Buttons (hidden on mobile) */}
+          {!isMobile && (
+            <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ flexShrink: 0 }}>
+              {/* Advanced Filters */}
+              <ActionButton
+                buttonType="secondary"
+                onClick={handleAdvancedFilters}
+                startIcon={<FilterIcon />}
+              >
+                Advanced Filters
+              </ActionButton>
+
+              {/* Export Report */}
+              <ActionButton
+                buttonType="secondary"
+                onClick={handleExportReport}
+                startIcon={<ExportIcon />}
+              >
+                Export Report
+              </ActionButton>
+
+              {/* AI Insights */}
+              <ActionButton
+                buttonType="primary"
+                onClick={handleAIInsights}
+                startIcon={<LightningIcon />}
+              >
+                AI Insights
+              </ActionButton>
+            </Stack>
+          )}
         </Stack>
 
         {/* Search and Filter Controls Section */}
         <Stack
-          direction="row"
+          direction={{ xs: "column", lg: "row" }}
           justifyContent="space-between"
-          alignItems="center"
-          spacing={3}
+          alignItems={{ xs: "stretch", lg: "center" }}
+          spacing={{ xs: 2, lg: 3 }}
         >
           {/* Left side - Search */}
-          <Box sx={{ flex: 1, maxWidth: "480px" }}>
+          <Box sx={{ flex: 1, maxWidth: { xs: "100%", lg: "480px" } }}>
             <SearchField
-              placeholder="Search campaigns, insights or metrics"
+              placeholder={isSmall ? "Search..." : "Search campaigns, insights or metrics"}
               value={searchValue}
               onChange={handleSearchChange}
               size="small"
@@ -486,39 +599,72 @@ export const DashboardHeader = ({ activePage = "/" }: DashboardHeaderProps) => {
             />
           </Box>
 
-          {/* Right side - Filter Controls */}
-          <Stack direction="row" spacing={2.5} alignItems="center" sx={{ flexShrink: 0 }}>
-            {/* Time Filters */}
-            <Stack direction="row" spacing={1.5}>
-              {timeFilters.map((filter) => (
-                <TimeFilterChip
-                  key={filter}
-                  label={filter}
-                  selected={selectedTimeFilter === filter}
-                  onClick={() => handleTimeFilterChange(filter)}
-                  clickable
-                />
-              ))}
+          {/* Filter Toggle Button (mobile only) */}
+          {isMobile && (
+            <Button
+              onClick={() => setShowFilters(!showFilters)}
+              sx={{ alignSelf: "flex-start" }}
+              variant="outlined"
+              size="small"
+            >
+              {showFilters ? "Hide Filters" : "Show Filters"}
+            </Button>
+          )}
+
+          {/* Filter Controls - Always show on desktop, collapsible on mobile */}
+          <Collapse in={showFilters || !isMobile}>
+            <Stack
+              direction="row"
+              spacing={{ xs: 1, lg: 2.5 }}
+              alignItems="center"
+              sx={{ flexShrink: 0 }}
+              flexWrap={{ xs: "wrap", lg: "nowrap" }}
+              useFlexGap
+            >
+              {/* Time Filters */}
+              <Stack direction="row" spacing={{ xs: 0.5, lg: 1.5 }} flexWrap="wrap" useFlexGap>
+                {timeFilters.map((filter) => (
+                  <TimeFilterChip
+                    key={filter}
+                    label={filter}
+                    selected={selectedTimeFilter === filter}
+                    onClick={() => handleTimeFilterChange(filter)}
+                    clickable
+                  />
+                ))}
+              </Stack>
+
+              {/* Date Selector */}
+              <ActionButton
+                buttonType="secondary"
+                onClick={handleSelectDates}
+                startIcon={<CalendarIcon />}
+              >
+                {isSmall ? "Dates" : "Select dates"}
+              </ActionButton>
+
+              {/* Filters */}
+              <ActionButton
+                buttonType="secondary"
+                onClick={handleFilters}
+                startIcon={<FilterIcon />}
+              >
+                Filters
+              </ActionButton>
             </Stack>
+          </Collapse>
 
-            {/* Date Selector */}
-            <ActionButton
-              buttonType="secondary"
-              onClick={handleSelectDates}
-              startIcon={<CalendarIcon />}
-            >
-              Select dates
-            </ActionButton>
-
-            {/* Filters */}
-            <ActionButton
-              buttonType="secondary"
-              onClick={handleFilters}
-              startIcon={<FilterIcon />}
-            >
-              Filters
-            </ActionButton>
-          </Stack>
+          {/* Mobile Action Buttons */}
+          {isMobile && (
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+              <ActionButton buttonType="primary" onClick={handleAIInsights} startIcon={<LightningIcon />} sx={{ flex: 1 }}>
+                AI Insights
+              </ActionButton>
+              <ActionButton buttonType="secondary" onClick={handleExportReport} startIcon={<ExportIcon />}>
+                Export
+              </ActionButton>
+            </Stack>
+          )}
         </Stack>
 
         {/* Date Picker Popover */}

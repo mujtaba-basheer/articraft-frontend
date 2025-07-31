@@ -1,10 +1,14 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Drawer from "@mui/material/Drawer";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { Sidebar } from "../components/Sidebar/Sidebar";
 import { DashboardHeader } from "../components/Header/DashboardHeader";
 import { DashboardContent } from "../views/DashboardContent";
 import { AnalyticsContent } from "../views/AnalyticsContent";
 import { AttributionContent } from "../views/AttributionContent";
+import { IntegrationsPage } from "../views/IntegrationsPage";
 
 // Type for page paths (should match the ones in menuItems)
 type PagePath = "/" | "/analytics" | "/attribution" | "/revenue" | "/reports" | 
@@ -20,62 +24,75 @@ const PageContent = ({ activePage }: { activePage: PagePath }) => {
       return <AnalyticsContent />;
     case "/attribution":
       return <AttributionContent />; 
+      case "/integrations":
+      return <IntegrationsPage />
     case "/revenue":
       return (
         <Box sx={{ 
-          padding: "40px", 
-          textAlign: "center", 
+          padding: { xs: "24px", sm: "40px" },
+          textAlign: "center",
           backgroundColor: "#ffffff", 
-          borderRadius: "12px",
+          borderRadius: { xs: "8px", sm: "12px" },
           border: "1px solid #e1e5e9",
           boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
-          margin: "20px"
+          margin: { xs: "12px", sm: "20px" }
         }}>
-          <h2 style={{ 
-            margin: "0 0 16px 0", 
-            color: "#1f2937",
-            fontSize: "24px",
-            fontWeight: 600
-          }}>
+          <Typography
+            variant="h2"
+            sx={{
+              margin: "0 0 16px 0", 
+              color: "#1f2937",
+              fontSize: { xs: "20px", sm: "24px" },
+              fontWeight: 600
+            }}
+          >
             Revenue Page
-          </h2>
-          <p style={{ 
-            margin: "0", 
-            color: "#6b7280",
-            fontSize: "16px",
-            lineHeight: 1.6
-          }}>
+          </Typography>
+          <Typography
+            sx={{
+              margin: "0", 
+              color: "#6b7280",
+              fontSize: { xs: "14px", sm: "16px" },
+              lineHeight: 1.6
+            }}
+          >
             Monitor revenue streams and financial performance data will be displayed here.
-          </p>
+          </Typography>
         </Box>
       );
     default:
+      const pageName = activePage.slice(1).charAt(0).toUpperCase() + activePage.slice(2).replace(/-/g, ' ');
       return (
         <Box sx={{ 
-          padding: "40px", 
-          textAlign: "center", 
+          padding: { xs: "24px", sm: "40px" },
+          textAlign: "center",
           backgroundColor: "#ffffff", 
-          borderRadius: "12px",
+          borderRadius: { xs: "8px", sm: "12px" },
           border: "1px solid #e1e5e9",
           boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
-          margin: "20px"
+          margin: { xs: "12px", sm: "20px" }
         }}>
-          <h2 style={{ 
-            margin: "0 0 16px 0", 
-            color: "#1f2937",
-            fontSize: "24px",
-            fontWeight: 600
-          }}>
-            {activePage.slice(1).charAt(0).toUpperCase() + activePage.slice(2)} Page
-          </h2>
-          <p style={{ 
-            margin: "0", 
-            color: "#6b7280",
-            fontSize: "16px",
-            lineHeight: 1.6
-          }}>
+          <Typography
+            variant="h2"
+            sx={{
+              margin: "0 0 16px 0", 
+              color: "#1f2937",
+              fontSize: { xs: "20px", sm: "24px" },
+              fontWeight: 600
+            }}
+          >
+            {pageName} Page
+          </Typography>
+          <Typography
+            sx={{
+              margin: "0", 
+              color: "#6b7280",
+              fontSize: { xs: "14px", sm: "16px" },
+              lineHeight: 1.6
+            }}
+          >
             This page is under development. Content for {activePage} will be added soon.
-          </p>
+          </Typography>
         </Box>
       );
   }
@@ -93,10 +110,26 @@ interface DefaultLayoutProps {
 }
 
 export const DefaultLayout = ({ user, onLogout }: DefaultLayoutProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [activePage, setActivePage] = useState<PagePath>("/");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handlePageChange = (path: string) => {
     setActivePage(path as PagePath);
+    // Close mobile sidebar when navigating
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
+  const handleMenuToggle = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleSidebarClose = () => {
+    setSidebarOpen(false);
   };
 
   return (
@@ -106,14 +139,40 @@ export const DefaultLayout = ({ user, onLogout }: DefaultLayoutProps) => {
       backgroundColor: "#fafbfc",
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
     }}>
-      {/* Sidebar - Fixed width */}
-      <Box sx={{ width: 280, flexShrink: 0 }}>
-        <Sidebar 
-          onPageChange={handlePageChange} 
-          user={user}
-          onLogout={onLogout}
-        />
-      </Box>
+      {/* Desktop Sidebar - Always visible on desktop */}
+      {!isMobile && (
+        <Box sx={{ width: 280, flexShrink: 0 }}>
+          <Sidebar 
+            onPageChange={handlePageChange} 
+            user={user}
+            onLogout={onLogout}
+          />
+        </Box>
+      )}
+
+      {/* Mobile Sidebar Drawer - Only on mobile */}
+      {isMobile && (
+        <Drawer
+          anchor="left"
+          open={sidebarOpen}
+          onClose={handleSidebarClose}
+          ModalProps={{
+            keepMounted: true, // Better mobile performance
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: 280,
+            },
+          }}
+        >
+          <Sidebar 
+            onPageChange={handlePageChange} 
+            user={user}
+            onLogout={onLogout}
+          />
+        </Drawer>
+      )}
       
       {/* Main Content Area */}
       <Box sx={{ 
@@ -130,7 +189,10 @@ export const DefaultLayout = ({ user, onLogout }: DefaultLayoutProps) => {
           zIndex: 10,
           boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
         }}>
-          <DashboardHeader activePage={activePage} />
+          <DashboardHeader 
+            activePage={activePage} 
+            onMenuToggle={handleMenuToggle}
+          />
         </Box>
         
         {/* Page Content - Scrollable */}
@@ -147,3 +209,4 @@ export const DefaultLayout = ({ user, onLogout }: DefaultLayoutProps) => {
 };
 
 export default DefaultLayout;
+

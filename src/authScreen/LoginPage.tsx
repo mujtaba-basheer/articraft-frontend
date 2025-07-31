@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -10,7 +10,6 @@ import {
   Alert,
   InputAdornment,
   IconButton,
-  Divider,
   Checkbox,
   FormControlLabel,
   Link,
@@ -89,7 +88,7 @@ const LoginButton = styled(Button)(() => ({
   background: `linear-gradient(135deg, ${colors.blue500} 0%, ${colors.blue600} 100%)`,
   boxShadow: "0 4px 12px 0 rgba(59, 130, 246, 0.15)",
   "&:hover": {
-    background: `linear-gradient(135deg, ${colors.blue600} 0%, ${colors.blue700} 100%)`,
+    background: `linear-gradient(135deg, ${colors.blue600} 0%, ${colors.blue700} 100())`,
     boxShadow: "0 6px 16px 0 rgba(59, 130, 246, 0.2)",
   },
   "&:disabled": {
@@ -113,16 +112,8 @@ const GoogleButton = styled(Button)(() => ({
   },
 }));
 
-const DemoCredentialsCard = styled(Card)(() => ({
-  marginTop: "24px",
-  borderRadius: "12px",
-  backgroundColor: colors.gray50,
-  border: `1px solid ${colors.gray200}`,
-  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
-}));
-
 const FooterContainer = styled(Box)(() => ({
-  position: "absolute",
+  position: "fixed",
   bottom: "20px",
   left: "50%",
   transform: "translateX(-50%)",
@@ -133,6 +124,7 @@ const FooterContainer = styled(Box)(() => ({
   maxWidth: "400px",
   color: "rgba(255, 255, 255, 0.8)",
   fontSize: "12px",
+  zIndex: 1,
 }));
 
 // Eye icon for password visibility
@@ -178,7 +170,13 @@ const GoogleIcon = () => (
 );
 
 interface LoginPageProps {
-  onLogin: (credentials: { email: string; password: string }) => void;
+  onLogin: (userData: { 
+    email: string; 
+    name?: string; 
+    role?: string; 
+    accessToken?: string;
+    id?: string;
+  }) => void;
   onSignup?: () => void;
 }
 
@@ -190,44 +188,115 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Demo credentials matching your existing users
-  const demoCredentials = [
-    { email: "admin@looptrack.ai", password: "admin123", role: "Admin" },
-    { email: "manager@looptrack.ai", password: "manager123", role: "Manager" },
-    { email: "vishal@looptrack.ai", password: "vishal123", role: "User" },
-  ];
+  // Load remembered credentials on component mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("looptrack_remembered_email");
+    const rememberedPassword = localStorage.getItem("looptrack_remembered_password");
+    const wasRemembered = localStorage.getItem("looptrack_remember_me") === "true";
+    
+    if (wasRemembered && rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+      if (rememberedPassword) {
+        // Decode the stored password (using simple base64 for security)
+        try {
+          const decodedPassword = atob(rememberedPassword);
+          setPassword(decodedPassword);
+        } catch (err) {
+          console.error("Error decoding remembered password:", err);
+          // Clear corrupted data
+          localStorage.removeItem("looptrack_remembered_password");
+        }
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      console.log("Sending login request to API...");
+      
+      const response = await fetch("https://looptrack.up.railway.app/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          password: password,
+        }),
+      });
 
-    // Check demo credentials
-    const validCredential = demoCredentials.find(
-      cred => cred.email === email && cred.password === password
-    );
+      const data = await response.json();
+      
+      console.log("Response status:", response.status);
+      console.log("Response data:", data);
 
-    if (validCredential) {
-      onLogin({ email, password });
-    } else {
-      setError("Invalid email or password. Please try the demo credentials below.");
+      if (response.ok && data.accessToken) {
+        // Handle remember me functionality
+        if (rememberMe) {
+          localStorage.setItem("looptrack_remembered_email", email);
+          // Store encoded password for security (base64)
+          localStorage.setItem("looptrack_remembered_password", btoa(password));
+          localStorage.setItem("looptrack_remember_me", "true");
+        } else {
+          // Clear remembered credentials if user unchecked remember me
+          localStorage.removeItem("looptrack_remembered_email");
+          localStorage.removeItem("looptrack_remembered_password");
+          localStorage.removeItem("looptrack_remember_me");
+        }
+
+        // Store access token for API requests
+        localStorage.setItem("looptrack_access_token", data.accessToken);
+
+        // Extract user information from API response
+        const userData = {
+          id: data.id,
+          email: data.email || email,
+          name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "User",
+          role: data.emailVerified ? "Verified User" : "User",
+          accessToken: data.accessToken,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          emailVerified: data.emailVerified,
+          metaConnected: data.metaConnected,
+          shopifyConnected: data.shopifyConnected,
+        };
+
+        console.log("Login successful, user data:", userData);
+        onLogin(userData);
+      } else {
+        // Handle API error response
+        const errorMessage = data.message || data.error || "Invalid email or password. Please try again.";
+        setError(errorMessage);
+        console.error("Login failed:", errorMessage);
+      }
+    } catch (err) {
+      // Handle network or other errors
+      console.error("Login error:", err);
+      setError("Unable to connect to the server. Please check your connection and try again.");
     }
 
     setIsLoading(false);
   };
 
-  const handleDemoLogin = (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    setError("");
+  const handleGoogleLogin = () => {
+    // Redirect to Google OAuth endpoint
+    window.location.href = "https://looptrack.up.railway.app/api/auth/google";
   };
 
-  const handleGoogleLogin = () => {
-    // Simulate Google login with default admin account
-    onLogin({ email: "admin@looptrack.ai", password: "admin123" });
+  const handleForgotPassword = () => {
+    if (email) {
+      // Redirect to forgot password page with email
+      window.location.href = `https://looptrack.up.railway.app/auth/forgot-password?email=${encodeURIComponent(email)}`;
+    } else {
+      // Redirect to forgot password page
+      window.location.href = "https://looptrack.up.railway.app/auth/forgot-password";
+    }
   };
 
   return (
@@ -351,12 +420,13 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                     }
                   />
                   <Link
-                    href="#"
+                    onClick={handleForgotPassword}
                     sx={{
                       fontSize: "14px",
                       color: colors.blue600,
                       textDecoration: "none",
                       fontWeight: 500,
+                      cursor: "pointer",
                       "&:hover": {
                         textDecoration: "underline",
                       },
@@ -370,7 +440,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  disabled={isLoading}
+                  disabled={isLoading || !email || !password}
                 >
                   {isLoading ? "Signing in..." : "Sign in"}
                 </LoginButton>
@@ -413,93 +483,6 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
             </Typography>
           </CardContent>
         </LoginCard>
-
-        <DemoCredentialsCard>
-          <CardContent sx={{ padding: "20px" }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: "14px",
-                fontWeight: 600,
-                color: colors.gray700,
-                marginBottom: "16px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              🚀 Demo Credentials
-            </Typography>
-
-            <Stack spacing={2}>
-              {demoCredentials.map((cred, index) => (
-                <Box key={index}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ marginBottom: "8px" }}
-                  >
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: "13px",
-                          fontWeight: 600,
-                          color: colors.gray700,
-                          marginBottom: "2px",
-                        }}
-                      >
-                        {cred.role} Account
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: "12px",
-                          color: colors.gray500,
-                          fontFamily: "monospace",
-                          marginBottom: "1px",
-                        }}
-                      >
-                        {cred.email}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: "12px",
-                          color: colors.gray500,
-                          fontFamily: "monospace",
-                        }}
-                      >
-                        {cred.password}
-                      </Typography>
-                    </Box>
-                    <Button
-                      size="small"
-                      onClick={() => handleDemoLogin(cred.email, cred.password)}
-                      sx={{
-                        fontSize: "11px",
-                        fontWeight: 500,
-                        textTransform: "none",
-                        color: colors.blue600,
-                        padding: "4px 12px",
-                        borderRadius: "6px",
-                        backgroundColor: colors.blue50,
-                        "&:hover": {
-                          backgroundColor: colors.blue100,
-                        },
-                      }}
-                    >
-                      Use
-                    </Button>
-                  </Stack>
-                  {index < demoCredentials.length - 1 && (
-                    <Divider sx={{ marginTop: "12px" }} />
-                  )}
-                </Box>
-              ))}
-            </Stack>
-          </CardContent>
-        </DemoCredentialsCard>
 
         <FooterContainer>
           <Typography sx={{ fontSize: "12px" }}>
