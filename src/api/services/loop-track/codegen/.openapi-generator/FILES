@@ -1,0 +1,15 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+api.ts
+base.ts
+common.ts
+configuration.ts
+docs/AuthControllerApi.md
+docs/DefaultApi.md
+docs/SignInRequestDto.md
+docs/SignInResponseDto.md
+docs/SignupRequestDto.md
+docs/SignupResponseDto.md
+git_push.sh
+index.ts
