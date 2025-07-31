@@ -12,16 +12,21 @@ interface User {
   name?: string;
 }
 
-interface SignupData {
-  name: string;
+
+
+// Add these interfaces to match what your components actually expect
+interface LoginUserData {
   email: string;
-  password: string;
-  organizationGoal: string;
-  selectedChannels: string[];
-  setupType: string;
-  organizationName: string;
-  organizationDescription: string;
-  brandLogo?: File;
+  name?: string;
+  role?: string;
+  accessToken?: string;
+  id?: string;
+}
+
+interface SignupUserData {
+  email: string;
+  firstName: string;
+  lastName: string;
 }
 
 function App() {
@@ -54,26 +59,27 @@ function App() {
     checkAuthStatus();
   }, []);
 
-  const handleLogin = (credentials: { email: string; password: string }) => {
+  // Fixed login handler - matches what LoginPage expects
+  const handleLogin = (userData: LoginUserData) => {
     // Determine user role and name based on email
     let role = "User";
     let name = "User";
     
-    if (credentials.email === "admin@looptrack.ai") {
+    if (userData.email === "admin@looptrack.ai") {
       role = "Admin";
       name = "Admin User";
-    } else if (credentials.email === "manager@looptrack.ai") {
+    } else if (userData.email === "manager@looptrack.ai") {
       role = "Manager";
       name = "Manager User";
-    } else if (credentials.email === "vishal@looptrack.ai") {
+    } else if (userData.email === "vishal@looptrack.ai") {
       role = "User";
       name = "Vishal Shaw";
     }
 
     const user: User = {
-      email: credentials.email,
-      role: role,
-      name: name,
+      email: userData.email,
+      role: userData.role || role, // Use provided role or fallback to determined role
+      name: userData.name || name, // Use provided name or fallback to determined name
     };
 
     // Save to localStorage for persistence
@@ -85,12 +91,13 @@ function App() {
     setShowSignup(false);
   };
 
-  const handleSignup = (signupData: SignupData) => {
-    // Create user from signup data
+  // Fixed signup handler - matches what SignupFlow expects
+  const handleSignup = (userData: SignupUserData) => {
+    // Create user from signup data - combine firstName and lastName into name
     const user: User = {
-      email: signupData.email,
+      email: userData.email,
       role: "User", // Default role for new signups
-      name: signupData.name,
+      name: `${userData.firstName} ${userData.lastName}`,
     };
 
     // Save to localStorage for persistence
