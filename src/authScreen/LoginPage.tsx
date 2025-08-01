@@ -219,7 +219,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
     try {
       console.log("Sending login request to API...");
       
-      const response = await fetch("https://app.articraft.io/api/auth/signin", {
+      const response = await fetch("https://api.articraft.io/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -286,16 +286,16 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
 
   const handleGoogleLogin = () => {
     // Redirect to Google OAuth endpoint
-    window.location.href = "https://app.articraft.io/api/auth/google";
+    window.location.href = "https://api.articraft.io/api/auth/google";
   };
 
   const handleForgotPassword = () => {
     if (email) {
       // Redirect to forgot password page with email
-      window.location.href = `https://app.articraft.io/auth/forgot-password?email=${encodeURIComponent(email)}`;
+      window.location.href = `https://api.articraft.io/auth/forgot-password?email=${encodeURIComponent(email)}`;
     } else {
       // Redirect to forgot password page
-      window.location.href = "https://app.articraft.io/auth/forgot-password";
+      window.location.href = "https://api.articraft.io/auth/forgot-password";
     }
   };
 
