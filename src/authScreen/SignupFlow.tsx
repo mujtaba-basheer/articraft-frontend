@@ -373,7 +373,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://app.articraft.io/api/auth/signup", {
+      const response = await fetch("https://api.articraft.io/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -408,7 +408,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://app.articraft.io/api/auth/verify-email", {
+      const response = await fetch("https://api.articraft.io/api/auth/verify-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -452,7 +452,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
 
     try {
       // Call signup again to resend OTP
-      await fetch("https://app.articraft.io/api/auth/signup", {
+      await fetch("https://api.articraft.io/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -484,7 +484,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
 
   const handleGoogleSignup = () => {
     // Redirect to Google OAuth endpoint
-    window.location.href = "https://app.articraft.io/api/auth/google";
+    window.location.href = "https://api.articraft.io/api/auth/google";
   };
 
   // Step 1: Create Account
