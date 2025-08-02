@@ -42,6 +42,19 @@ import {
 /**
  *
  * @export
+ * @interface GoogleSignInRequestDto
+ */
+export interface GoogleSignInRequestDto {
+  /**
+   * JWT Token
+   * @type {string}
+   * @memberof GoogleSignInRequestDto
+   */
+  token: string;
+}
+/**
+ *
+ * @export
  * @interface SignInRequestDto
  */
 export interface SignInRequestDto {
@@ -223,6 +236,44 @@ export interface SignupResponseDto {
    */
   shopifyConnected: boolean;
 }
+/**
+ *
+ * @export
+ * @interface VerifyEmailRequestDto
+ */
+export interface VerifyEmailRequestDto {
+  /**
+   * Email
+   * @type {string}
+   * @memberof VerifyEmailRequestDto
+   */
+  email: string;
+  /**
+   * OTP received for email verification
+   * @type {string}
+   * @memberof VerifyEmailRequestDto
+   */
+  otp: string;
+}
+/**
+ *
+ * @export
+ * @interface VerifyEmailResponseDto
+ */
+export interface VerifyEmailResponseDto {
+  /**
+   * Email
+   * @type {string}
+   * @memberof VerifyEmailResponseDto
+   */
+  email: string;
+  /**
+   * OTP verification result
+   * @type {boolean}
+   * @memberof VerifyEmailResponseDto
+   */
+  result: boolean;
+}
 
 /**
  * AuthControllerApi - axios parameter creator
@@ -232,6 +283,59 @@ export const AuthControllerApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     *
+     * @param {GoogleSignInRequestDto} googleSignInRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    googleSignIn: async (
+      googleSignInRequestDto: GoogleSignInRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'googleSignInRequestDto' is not null or undefined
+      assertParamExists(
+        "googleSignIn",
+        "googleSignInRequestDto",
+        googleSignInRequestDto,
+      );
+      const localVarPath = `/api/auth/google-signin`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: "POST",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        googleSignInRequestDto,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {SignInRequestDto} signInRequestDto
@@ -330,6 +434,59 @@ export const AuthControllerApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @param {VerifyEmailRequestDto} verifyEmailRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verifyEmail: async (
+      verifyEmailRequestDto: VerifyEmailRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'verifyEmailRequestDto' is not null or undefined
+      assertParamExists(
+        "verifyEmail",
+        "verifyEmailRequestDto",
+        verifyEmailRequestDto,
+      );
+      const localVarPath = `/api/auth/verify-email`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: "POST",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter["Content-Type"] = "application/json";
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        verifyEmailRequestDto,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -341,6 +498,38 @@ export const AuthControllerApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator =
     AuthControllerApiAxiosParamCreator(configuration);
   return {
+    /**
+     *
+     * @param {GoogleSignInRequestDto} googleSignInRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async googleSignIn(
+      googleSignInRequestDto: GoogleSignInRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<SignInResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.googleSignIn(
+        googleSignInRequestDto,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["AuthControllerApi.googleSignIn"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
     /**
      *
      * @param {SignInRequestDto} signInRequestDto
@@ -405,6 +594,38 @@ export const AuthControllerApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath);
     },
+    /**
+     *
+     * @param {VerifyEmailRequestDto} verifyEmailRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async verifyEmail(
+      verifyEmailRequestDto: VerifyEmailRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<VerifyEmailResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.verifyEmail(
+        verifyEmailRequestDto,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["AuthControllerApi.verifyEmail"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
   };
 };
 
@@ -419,6 +640,20 @@ export const AuthControllerApiFactory = function (
 ) {
   const localVarFp = AuthControllerApiFp(configuration);
   return {
+    /**
+     *
+     * @param {GoogleSignInRequestDto} googleSignInRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    googleSignIn(
+      googleSignInRequestDto: GoogleSignInRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SignInResponseDto> {
+      return localVarFp
+        .googleSignIn(googleSignInRequestDto, options)
+        .then((request) => request(axios, basePath));
+    },
     /**
      *
      * @param {SignInRequestDto} signInRequestDto
@@ -447,6 +682,20 @@ export const AuthControllerApiFactory = function (
         .signup(signupRequestDto, options)
         .then((request) => request(axios, basePath));
     },
+    /**
+     *
+     * @param {VerifyEmailRequestDto} verifyEmailRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    verifyEmail(
+      verifyEmailRequestDto: VerifyEmailRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<VerifyEmailResponseDto> {
+      return localVarFp
+        .verifyEmail(verifyEmailRequestDto, options)
+        .then((request) => request(axios, basePath));
+    },
   };
 };
 
@@ -457,6 +706,22 @@ export const AuthControllerApiFactory = function (
  * @extends {BaseAPI}
  */
 export class AuthControllerApi extends BaseAPI {
+  /**
+   *
+   * @param {GoogleSignInRequestDto} googleSignInRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthControllerApi
+   */
+  public googleSignIn(
+    googleSignInRequestDto: GoogleSignInRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AuthControllerApiFp(this.configuration)
+      .googleSignIn(googleSignInRequestDto, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @param {SignInRequestDto} signInRequestDto
@@ -486,6 +751,22 @@ export class AuthControllerApi extends BaseAPI {
   ) {
     return AuthControllerApiFp(this.configuration)
       .signup(signupRequestDto, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {VerifyEmailRequestDto} verifyEmailRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthControllerApi
+   */
+  public verifyEmail(
+    verifyEmailRequestDto: VerifyEmailRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AuthControllerApiFp(this.configuration)
+      .verifyEmail(verifyEmailRequestDto, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }
@@ -614,6 +895,151 @@ export class DefaultApi extends BaseAPI {
   public getHello(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .getHello(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+}
+
+/**
+ * UserControllerApi - axios parameter creator
+ * @export
+ */
+export const UserControllerApiAxiosParamCreator = function (
+  configuration?: Configuration,
+) {
+  return {
+    /**
+     *
+     * @param {string} userId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserById: async (
+      userId: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'userId' is not null or undefined
+      assertParamExists("deleteUserById", "userId", userId);
+      const localVarPath = `/api/user/{userId}`.replace(
+        `{${"userId"}}`,
+        encodeURIComponent(String(userId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: "DELETE",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
+};
+
+/**
+ * UserControllerApi - functional programming interface
+ * @export
+ */
+export const UserControllerApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator =
+    UserControllerApiAxiosParamCreator(configuration);
+  return {
+    /**
+     *
+     * @param {string} userId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteUserById(
+      userId: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUserById(
+        userId,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["UserControllerApi.deleteUserById"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+  };
+};
+
+/**
+ * UserControllerApi - factory interface
+ * @export
+ */
+export const UserControllerApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = UserControllerApiFp(configuration);
+  return {
+    /**
+     *
+     * @param {string} userId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserById(
+      userId: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .deleteUserById(userId, options)
+        .then((request) => request(axios, basePath));
+    },
+  };
+};
+
+/**
+ * UserControllerApi - object-oriented interface
+ * @export
+ * @class UserControllerApi
+ * @extends {BaseAPI}
+ */
+export class UserControllerApi extends BaseAPI {
+  /**
+   *
+   * @param {string} userId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UserControllerApi
+   */
+  public deleteUserById(userId: string, options?: RawAxiosRequestConfig) {
+    return UserControllerApiFp(this.configuration)
+      .deleteUserById(userId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

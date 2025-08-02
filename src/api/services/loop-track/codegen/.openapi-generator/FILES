@@ -7,9 +7,13 @@ common.ts
 configuration.ts
 docs/AuthControllerApi.md
 docs/DefaultApi.md
+docs/GoogleSignInRequestDto.md
 docs/SignInRequestDto.md
 docs/SignInResponseDto.md
 docs/SignupRequestDto.md
 docs/SignupResponseDto.md
+docs/UserControllerApi.md
+docs/VerifyEmailRequestDto.md
+docs/VerifyEmailResponseDto.md
 git_push.sh
 index.ts

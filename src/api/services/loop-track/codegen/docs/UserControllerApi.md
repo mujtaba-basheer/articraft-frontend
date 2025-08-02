@@ -1,36 +1,43 @@
-# DefaultApi
+# UserControllerApi
 
 All URIs are relative to *https://api.articraft.io*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**getHello**](#gethello) | **GET** /api/v1 | |
+|[**deleteUserById**](#deleteuserbyid) | **DELETE** /api/user/{userId} | |
 
-# **getHello**
-> string getHello()
+# **deleteUserById**
+> deleteUserById()
 
 
 ### Example
 
 ```typescript
 import {
-    DefaultApi,
+    UserControllerApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new DefaultApi(configuration);
+const apiInstance = new UserControllerApi(configuration);
 
-const { status, data } = await apiInstance.getHello();
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deleteUserById(
+    userId
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-**string**
+void (empty response body)
 
 ### Authorization
 
@@ -39,7 +46,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 
 ### HTTP response details

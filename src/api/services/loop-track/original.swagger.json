@@ -1,6 +1,16 @@
 {
   "components": {
     "schemas": {
+      "GoogleSignInRequestDto": {
+        "properties": {
+          "token": {
+            "description": "JWT Token",
+            "type": "string"
+          }
+        },
+        "required": ["token"],
+        "type": "object"
+      },
       "SignInRequestDto": {
         "properties": {
           "email": {
@@ -153,6 +163,36 @@
           "createdAt"
         ],
         "type": "object"
+      },
+      "VerifyEmailRequestDto": {
+        "properties": {
+          "email": {
+            "description": "Email",
+            "example": "qwerty@example.com",
+            "type": "string"
+          },
+          "otp": {
+            "description": "OTP received for email verification",
+            "type": "string"
+          }
+        },
+        "required": ["email", "otp"],
+        "type": "object"
+      },
+      "VerifyEmailResponseDto": {
+        "properties": {
+          "email": {
+            "description": "Email",
+            "example": "qwerty@example.com",
+            "type": "string"
+          },
+          "result": {
+            "description": "OTP verification result",
+            "type": "boolean"
+          }
+        },
+        "required": ["email", "result"],
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -171,6 +211,35 @@
   },
   "openapi": "3.0.0",
   "paths": {
+    "/api/auth/google-signin": {
+      "post": {
+        "operationId": "googleSignIn",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleSignInRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponseDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": ["auth-controller"]
+      }
+    },
     "/api/auth/signin": {
       "post": {
         "operationId": "signIn",
@@ -229,6 +298,56 @@
         "tags": ["auth-controller"]
       }
     },
+    "/api/auth/verify-email": {
+      "post": {
+        "operationId": "verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyEmailResponseDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": ["auth-controller"]
+      }
+    },
+    "/api/user/{userId}": {
+      "delete": {
+        "operationId": "deleteUserById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["user-controller"]
+      }
+    },
     "/api/v1": {
       "get": {
         "operationId": "getHello",
@@ -251,7 +370,7 @@
   "servers": [
     {
       "description": "LoopTrack API Base URL",
-      "url": "https://looptrack.up.railway.app"
+      "url": "https://api.articraft.io"
     },
     {
       "description": "LoopTrack API Base URL",

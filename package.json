@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "swagger": "run-s swagger:*",
+    "swagger": "yarn run swagger:download && yarn swagger:update && yarn swagger:generate",
     "swagger:download": "tsx ./dev_scripts/swagger/download.ts",
     "swagger:update": "tsx ./dev_scripts/swagger/update.ts",
     "swagger:generate": "tsx ./dev_scripts/swagger/generate.ts"
@@ -19,6 +19,7 @@
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.1.2",
     "@mui/material": "^7.2.0",
+    "axios": "^1.11.0",
     "dotenv": "^17.2.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -27,7 +28,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
-    "@openapitools/openapi-generator-cli": "^2.21.4",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

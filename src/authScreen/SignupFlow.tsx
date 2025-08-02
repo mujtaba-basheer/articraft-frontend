@@ -17,6 +17,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { colors } from "../styles/colors";
+import { authController } from "../api/services/loop-track";
+import { isAxiosError } from "axios";
 
 const SignupContainer = styled(Box)(() => ({
   minHeight: "100vh",
@@ -33,7 +35,8 @@ const SignupCard = styled(Card)(() => ({
   maxWidth: "500px",
   borderRadius: "16px",
   border: `1px solid ${colors.gray200}`,
-  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+  boxShadow:
+    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
   backgroundColor: colors.baseWhite,
   overflow: "visible",
 }));
@@ -253,9 +256,9 @@ const SuccessCheckIcon = () => (
 const SparkleIcon = ({ delay = 0 }: { delay?: number }) => (
   <Box
     component="svg"
-    sx={{ 
-      width: 16, 
-      height: 16, 
+    sx={{
+      width: 16,
+      height: 16,
       color: colors.yellow400,
       position: "absolute",
       animation: `sparkle 2s ease-in-out infinite`,
@@ -339,9 +342,9 @@ interface SignupData {
 }
 
 interface SignupFlowProps {
-  onSignup: (userData: { 
-    email: string; 
-    firstName: string; 
+  onSignup: (userData: {
+    email: string;
+    firstName: string;
     lastName: string;
   }) => void;
   onBackToLogin: () => void;
@@ -355,7 +358,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
   const [otp, setOtp] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  
+
   const [signupData, setSignupData] = useState<SignupData>({
     firstName: "",
     lastName: "",
@@ -364,7 +367,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
   });
 
   const updateSignupData = (updates: Partial<SignupData>) => {
-    setSignupData(prev => ({ ...prev, ...updates }));
+    setSignupData((prev) => ({ ...prev, ...updates }));
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -373,30 +376,14 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://api.articraft.io/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: signupData.firstName,
-          lastName: signupData.lastName,
-          email: signupData.email,
-          password: signupData.password,
-        }),
-      });
+      await authController.signup(signupData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Move to OTP verification step
-        setStep(2);
-      } else {
-        setError(data.message || "Something went wrong. Please try again.");
+      setStep(2);
+    } catch (error) {
+      console.error("Signup error:", error);
+      if (isAxiosError(error)) {
+        setError(error.response?.data?.message);
       }
-    } catch (err) {
-      console.error("Signup error:", err);
-      setError("Unable to connect to the server. Please check your connection and try again.");
     }
 
     setIsLoading(false);
@@ -408,23 +395,26 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://api.articraft.io/api/auth/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: signupData.email,
-          otp: otp,
-        }),
-      });
+      const response = await fetch(
+        "https://api.articraft.io/api/auth/verify-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: signupData.email,
+            otp: otp,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok && data.result) {
         // OTP verified successfully, show success modal
         setShowSuccessModal(true);
-        
+
         // Auto-proceed to dashboard after 3 seconds
         setTimeout(() => {
           onSignup({
@@ -467,7 +457,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
 
       // Start cooldown timer
       const timer = setInterval(() => {
-        setResendCooldown(prev => {
+        setResendCooldown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
             return 0;
@@ -475,7 +465,6 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
           return prev - 1;
         });
       }, 1000);
-
     } catch (err) {
       console.error("Resend OTP error:", err);
       setResendCooldown(0);
@@ -493,7 +482,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
       <Box>
         <LogoSection>
           <Logo>L</Logo>
-          <Typography sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}>
+          <Typography
+            sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}
+          >
             LoopTrack
           </Typography>
         </LogoSection>
@@ -524,7 +515,10 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
         </Typography>
 
         {error && (
-          <Alert severity="error" sx={{ marginBottom: "24px", borderRadius: "8px" }}>
+          <Alert
+            severity="error"
+            sx={{ marginBottom: "24px", borderRadius: "8px" }}
+          >
             {error}
           </Alert>
         )}
@@ -536,7 +530,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                 fullWidth
                 label="First Name*"
                 value={signupData.firstName}
-                onChange={(e) => updateSignupData({ firstName: e.target.value })}
+                onChange={(e) =>
+                  updateSignupData({ firstName: e.target.value })
+                }
                 placeholder="Enter your first name"
                 required
               />
@@ -583,7 +579,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                   ),
                 }}
               />
-              <Typography sx={{ fontSize: "12px", color: colors.gray500, mt: 1 }}>
+              <Typography
+                sx={{ fontSize: "12px", color: colors.gray500, mt: 1 }}
+              >
                 Must be at least 8 characters.
               </Typography>
             </Box>
@@ -593,10 +591,10 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
               fullWidth
               variant="contained"
               disabled={
-                isLoading || 
-                !signupData.firstName || 
-                !signupData.lastName || 
-                !signupData.email || 
+                isLoading ||
+                !signupData.firstName ||
+                !signupData.lastName ||
+                !signupData.email ||
                 signupData.password.length < 8
               }
             >
@@ -648,8 +646,8 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
       BackdropComponent={Backdrop}
       BackdropProps={{
         style: {
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          backdropFilter: 'blur(8px)',
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
         },
       }}
     >
@@ -672,13 +670,15 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
           <SuccessCard>
             {/* Celebration Animation */}
             <CelebrationContainer />
-            
+
             {/* Success Icon */}
             <SuccessIconContainer>
               <SuccessCheckIcon />
             </SuccessIconContainer>
 
-            <CardContent sx={{ padding: "60px 40px 40px 40px", textAlign: "center" }}>
+            <CardContent
+              sx={{ padding: "60px 40px 40px 40px", textAlign: "center" }}
+            >
               <Typography
                 variant="h4"
                 sx={{
@@ -699,7 +699,8 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                   marginBottom: "8px",
                 }}
               >
-                Hi {signupData.firstName}! Your account has been created successfully.
+                Hi {signupData.firstName}! Your account has been created
+                successfully.
               </Typography>
 
               <Typography
@@ -709,7 +710,8 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                   marginBottom: "32px",
                 }}
               >
-                Get ready to unlock powerful insights for your marketing campaigns.
+                Get ready to unlock powerful insights for your marketing
+                campaigns.
               </Typography>
 
               <Box
@@ -738,7 +740,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                     lineHeight: 1.5,
                   }}
                 >
-                  You'll be redirected to your dashboard where you can start connecting your marketing channels and exploring powerful analytics.
+                  You'll be redirected to your dashboard where you can start
+                  connecting your marketing channels and exploring powerful
+                  analytics.
                 </Typography>
               </Box>
 
@@ -754,9 +758,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                 endIcon={
                   <Box
                     component="span"
-                    sx={{ 
+                    sx={{
                       fontSize: "16px",
-                      marginLeft: "4px"
+                      marginLeft: "4px",
                     }}
                   >
                     →
@@ -788,7 +792,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
       <Box>
         <LogoSection>
           <Logo>L</Logo>
-          <Typography sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}>
+          <Typography
+            sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}
+          >
             LoopTrack
           </Typography>
         </LogoSection>
@@ -828,7 +834,10 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ marginBottom: "24px", borderRadius: "8px" }}>
+          <Alert
+            severity="error"
+            sx={{ marginBottom: "24px", borderRadius: "8px" }}
+          >
             {error}
           </Alert>
         )}
@@ -855,7 +864,7 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
                   setOtp(value);
                 }}
                 placeholder="000000"
-                inputProps={{ 
+                inputProps={{
                   maxLength: 6,
                 }}
               />
@@ -882,11 +891,10 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
           >
             Didn't receive the code?
           </Typography>
-          <ResendButton
-            onClick={handleResendOtp}
-            disabled={resendCooldown > 0}
-          >
-            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"}
+          <ResendButton onClick={handleResendOtp} disabled={resendCooldown > 0}>
+            {resendCooldown > 0
+              ? `Resend in ${resendCooldown}s`
+              : "Resend code"}
           </ResendButton>
         </Box>
 
@@ -927,12 +935,8 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
           </SignupCard>
 
           <FooterContainer>
-            <Typography sx={{ fontSize: "12px" }}>
-              © LoopTrack 2025
-            </Typography>
-            <Typography sx={{ fontSize: "12px" }}>
-              help@looptrack.ai
-            </Typography>
+            <Typography sx={{ fontSize: "12px" }}>© LoopTrack 2025</Typography>
+            <Typography sx={{ fontSize: "12px" }}>help@looptrack.ai</Typography>
           </FooterContainer>
         </Box>
       </SignupContainer>
