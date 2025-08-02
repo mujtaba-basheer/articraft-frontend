@@ -32,7 +32,8 @@ const LoginCard = styled(Card)(() => ({
   maxWidth: "400px",
   borderRadius: "16px",
   border: `1px solid ${colors.gray200}`,
-  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+  boxShadow:
+    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
   backgroundColor: colors.baseWhite,
   overflow: "visible",
 }));
@@ -169,11 +170,22 @@ const GoogleIcon = () => (
   </Box>
 );
 
+type GoogleSignInResponseData = {
+  type: "googleSignIn";
+  detail: {
+    response: {
+      clientId: string;
+      client_id: string;
+      credential: string;
+    };
+  };
+};
+
 interface LoginPageProps {
-  onLogin: (userData: { 
-    email: string; 
-    name?: string; 
-    role?: string; 
+  onLogin: (userData: {
+    email: string;
+    name?: string;
+    role?: string;
     accessToken?: string;
     id?: string;
   }) => void;
@@ -191,9 +203,12 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
   // Load remembered credentials on component mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("looptrack_remembered_email");
-    const rememberedPassword = localStorage.getItem("looptrack_remembered_password");
-    const wasRemembered = localStorage.getItem("looptrack_remember_me") === "true";
-    
+    const rememberedPassword = localStorage.getItem(
+      "looptrack_remembered_password"
+    );
+    const wasRemembered =
+      localStorage.getItem("looptrack_remember_me") === "true";
+
     if (wasRemembered && rememberedEmail) {
       setEmail(rememberedEmail);
       setRememberMe(true);
@@ -211,6 +226,47 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    const gScriptEl = document.createElement("script");
+    gScriptEl.src = "https://accounts.google.com/gsi/client";
+    gScriptEl.async = true;
+
+    document.body.appendChild(gScriptEl);
+
+    return () => gScriptEl.remove();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("googleSignIn", handleGoogleLogin);
+
+    return () => window.removeEventListener("googleSignIn", handleGoogleLogin);
+  }, []);
+
+  const decodeJWT = (token: string) => {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  };
+
+  const handleGoogleLogin = (ev: Event) => {
+    const {
+      detail: {
+        response: { credential },
+      },
+    } = ev as unknown as GoogleSignInResponseData;
+
+    const decodedData = decodeJWT(credential);
+    console.log({ decodedData });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -218,12 +274,12 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
 
     try {
       console.log("Sending login request to API...");
-      
+
       const response = await fetch("https://api.articraft.io/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
           email: email.trim(),
@@ -232,7 +288,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
       });
 
       const data = await response.json();
-      
+
       console.log("Response status:", response.status);
       console.log("Response data:", data);
 
@@ -257,7 +313,8 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         const userData = {
           id: data.id,
           email: data.email || email,
-          name: `${data.firstName || ""} ${data.lastName || ""}`.trim() || "User",
+          name:
+            `${data.firstName || ""} ${data.lastName || ""}`.trim() || "User",
           role: data.emailVerified ? "Verified User" : "User",
           accessToken: data.accessToken,
           firstName: data.firstName,
@@ -271,22 +328,22 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         onLogin(userData);
       } else {
         // Handle API error response
-        const errorMessage = data.message || data.error || "Invalid email or password. Please try again.";
+        const errorMessage =
+          data.message ||
+          data.error ||
+          "Invalid email or password. Please try again.";
         setError(errorMessage);
         console.error("Login failed:", errorMessage);
       }
     } catch (err) {
       // Handle network or other errors
       console.error("Login error:", err);
-      setError("Unable to connect to the server. Please check your connection and try again.");
+      setError(
+        "Unable to connect to the server. Please check your connection and try again."
+      );
     }
 
     setIsLoading(false);
-  };
-
-  const handleGoogleLogin = () => {
-    // Redirect to Google OAuth endpoint
-    window.location.href = "https://api.articraft.io/api/auth/google";
   };
 
   const handleForgotPassword = () => {
@@ -343,14 +400,14 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
             </Typography>
 
             {error && (
-              <Alert 
-                severity="error" 
-                sx={{ 
+              <Alert
+                severity="error"
+                sx={{
                   marginBottom: "24px",
                   borderRadius: "8px",
                   "& .MuiAlert-message": {
                     fontSize: "14px",
-                  }
+                  },
                 }}
               >
                 {error}
@@ -398,7 +455,11 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                   />
                 </Box>
 
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -407,14 +468,16 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                         size="small"
                         sx={{
                           color: colors.gray400,
-                          '&.Mui-checked': {
+                          "&.Mui-checked": {
                             color: colors.blue500,
                           },
                         }}
                       />
                     }
                     label={
-                      <Typography sx={{ fontSize: "14px", color: colors.gray600 }}>
+                      <Typography
+                        sx={{ fontSize: "14px", color: colors.gray600 }}
+                      >
                         Remember for 30 days
                       </Typography>
                     }
@@ -445,15 +508,34 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                   {isLoading ? "Signing in..." : "Sign in"}
                 </LoginButton>
 
-                <GoogleButton
+                <div
+                  id="g_id_onload"
+                  data-client_id="443985873778-ql6ak0b8eu5ohp570j63u094odcgknr0.apps.googleusercontent.com"
+                  data-context="signin"
+                  data-ux_mode="popup"
+                  data-callback="handleGoogleSignInResponse"
+                  data-auto_prompt="false"
+                ></div>
+
+                <div
+                  className="g_id_signin"
+                  data-type="standard"
+                  data-shape="rectangular"
+                  data-theme="outline"
+                  data-text="signin_with"
+                  data-size="large"
+                  data-logo_alignment="left"
+                ></div>
+                {/* <GoogleButton
                   fullWidth
                   variant="outlined"
                   onClick={handleGoogleLogin}
                   disabled={isLoading}
+                  className="g-signin2"
                 >
                   <GoogleIcon />
                   Sign in with Google
-                </GoogleButton>
+                </GoogleButton> */}
               </Stack>
             </form>
 
@@ -485,12 +567,8 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         </LoginCard>
 
         <FooterContainer>
-          <Typography sx={{ fontSize: "12px" }}>
-            © LoopTrack 2025
-          </Typography>
-          <Typography sx={{ fontSize: "12px" }}>
-            help@looptrack.ai
-          </Typography>
+          <Typography sx={{ fontSize: "12px" }}>© LoopTrack 2025</Typography>
+          <Typography sx={{ fontSize: "12px" }}>help@looptrack.ai</Typography>
         </FooterContainer>
       </Box>
     </LoginContainer>

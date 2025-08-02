@@ -1,13 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="google-signin-client_id"
+      content="443985873778-ql6ak0b8eu5ohp570j63u094odcgknr0.apps.googleusercontent.com"
+    />
     <title>Looptrack</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      function handleGoogleSignInResponse(response) {
+        const event = new CustomEvent("googleSignIn", { detail: { response } });
+        window.dispatchEvent(event);
+      }
+    </script>
   </body>
 </html>
