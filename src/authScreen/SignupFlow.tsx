@@ -600,16 +600,6 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
             >
               {isLoading ? "Creating Account..." : "Get Started"}
             </ContinueButton>
-
-            <GoogleButton
-              fullWidth
-              variant="outlined"
-              onClick={handleGoogleSignup}
-              disabled={isLoading}
-            >
-              <GoogleIcon />
-              Sign up with Google
-            </GoogleButton>
           </Stack>
         </form>
 
