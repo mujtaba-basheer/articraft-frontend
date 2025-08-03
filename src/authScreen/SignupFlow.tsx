@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import { colors } from "../styles/colors";
 import { authController } from "../api/services/loop-track";
 import { isAxiosError } from "axios";
+import logo from '../assets/4.png';
 
 const SignupContainer = styled(Box)(() => ({
   minHeight: "100vh",
@@ -52,7 +53,6 @@ const Logo = styled(Box)(() => ({
   width: "32px",
   height: "32px",
   borderRadius: "8px",
-  background: `linear-gradient(135deg, ${colors.blue500} 0%, ${colors.blue600} 100%)`,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -481,11 +481,11 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     <Fade in={true}>
       <Box>
         <LogoSection>
-          <Logo>L</Logo>
+          <Logo><img src={logo} alt="" width="35"/></Logo>
           <Typography
             sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}
           >
-            LoopTrack
+            Articraft
           </Typography>
         </LogoSection>
 

@@ -15,6 +15,7 @@ import { Icon } from "../Icon";
 import { menuItems, footerMenuItems } from "./items";
 import { colors } from "../../styles/colors";
 import { useState } from "react";
+import logo from '../../assets/4.png';
 
 const SidebarNavigationItem = styled(ListItem)(() => ({
   padding: "0",
@@ -145,7 +146,6 @@ export const Sidebar = ({ onPageChange, user, onLogout }: SidebarProps) => {
               width: 24,
               height: 24,
               borderRadius: "4px",
-              background: `linear-gradient(135deg, ${colors.blue500} 0%, ${colors.blue600} 100%)`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -158,17 +158,17 @@ export const Sidebar = ({ onPageChange, user, onLogout }: SidebarProps) => {
                 fontWeight: 700,
               }}
             >
-              L
+              <img src={logo} alt="" width="35"/>
             </Typography>
           </Box>
           <Typography
             sx={{
-              fontSize: "18px",
+              fontSize: "20px",
               fontWeight: 700,
               color: colors.gray900,
             }}
           >
-            LoopTrack
+            Articraft
           </Typography>
         </Stack>
       </LogoSection>
