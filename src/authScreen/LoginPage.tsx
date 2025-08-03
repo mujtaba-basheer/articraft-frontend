@@ -19,6 +19,8 @@ import { authController } from "../api/services/loop-track";
 import { colors } from "../styles/colors";
 import { isAxiosError } from "axios";
 
+import logo from '../assets/4.png';
+
 const LoginContainer = styled(Box)(() => ({
   minHeight: "100vh",
   display: "flex",
@@ -51,7 +53,6 @@ const Logo = styled(Box)(() => ({
   width: "48px",
   height: "48px",
   borderRadius: "12px",
-  background: `linear-gradient(135deg, ${colors.blue500} 0%, ${colors.blue600} 100%)`,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -300,7 +301,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         <LoginCard>
           <CardContent sx={{ padding: "48px 40px" }}>
             <LogoSection>
-              <Logo>L</Logo>
+              <Logo><img src={logo} alt="" width="35"/></Logo>
               <Typography
                 sx={{
                   fontSize: "24px",
@@ -308,7 +309,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                   color: colors.gray900,
                 }}
               >
-                LoopTrack
+               Articraft
               </Typography>
             </LogoSection>
 
