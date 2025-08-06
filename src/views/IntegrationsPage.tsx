@@ -289,11 +289,26 @@ interface FieldConfig {
   showWhen?: string;
 }
 
+type FbLoginSuccessResponse = {
+  status: "connected" | "not_authorized" | "unknown";
+  authResponse: {
+    accessToken: string;
+    data_access_expiration_time: number;
+    expiresIn: number;
+    graphDomain: "facebook";
+    signedRequest: string;
+    userID: string;
+  };
+};
+
 declare global {
   interface Window {
     FB: {
       getLoginStatus: (callback: any) => any;
-      login: (callback: any, options: { scope: string }) => any;
+      login: (
+        callback: (response: FbLoginSuccessResponse) => any,
+        options: { scope: string }
+      ) => any;
     };
   }
 }
@@ -1015,8 +1030,13 @@ export const IntegrationsPage = () => {
 
   const handleFbLoginInit = () => {
     window.FB.login(
-      function (response: any) {
+      function (response) {
         console.log({ response });
+        const { status, authResponse } = response;
+        if (status === "connected") {
+          const { userID, accessToken } = authResponse;
+          // Do something
+        }
       },
       { scope: "public_profile,email" }
     );
@@ -1025,23 +1045,6 @@ export const IntegrationsPage = () => {
   // useEffect(() => {
   //   window.addEventListener("");
   // });
-
-  useEffect(() => {
-    (function (d, s, id) {
-      const fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        return;
-      }
-      const js = d.createElement(s) as HTMLScriptElement;
-      js.id = id;
-      js.defer = true;
-      js.async = true;
-      js.src =
-        "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=1095248368702808";
-      js.crossOrigin = "anonymous";
-      fjs?.parentNode?.insertBefore(js, fjs);
-    })(document, "script", "facebook-jssdk");
-  }, []);
 
   return (
     <IntegrationsContainer>
