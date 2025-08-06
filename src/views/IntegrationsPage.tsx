@@ -1018,7 +1018,7 @@ export const IntegrationsPage = () => {
       function (response: any) {
         console.log({ response });
       },
-      { scope: "public_profile,email" }
+      { scope: "public_profile,email,ads_read,ads_management" }
     );
   };
 
