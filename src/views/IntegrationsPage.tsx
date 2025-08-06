@@ -1028,12 +1028,13 @@ export const IntegrationsPage = () => {
       if (d.getElementById(id)) {
         return;
       }
-      const js = d.createElement(s);
+      const js = d.createElement(s) as HTMLScriptElement;
       js.id = id;
-      js.setAttribute(
-        "src",
-        "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=1095248368702808"
-      );
+      js.defer = true;
+      js.async = true;
+      js.src =
+        "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=1095248368702808";
+      js.crossOrigin = "anonymous";
       fjs?.parentNode?.insertBefore(js, fjs);
     })(document, "script", "facebook-jssdk");
   }, []);
