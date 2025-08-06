@@ -14,6 +14,16 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "1095248368702808",
+          cookie: true,
+          xfbml: true,
+          version: "v23.0",
+        });
+
+        FB.AppEvents.logPageView();
+      };
       function handleGoogleSignInResponse(response) {
         const event = new CustomEvent("googleSignIn", { detail: { response } });
         window.dispatchEvent(event);

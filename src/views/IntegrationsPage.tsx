@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -33,7 +33,7 @@ const IntegrationsContainer = styled(Box)(() => ({
   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
 }));
 
-const IntegrationCard = styled(Card)<{ connected?: boolean }>(({ }) => ({
+const IntegrationCard = styled(Card)<{ connected?: boolean }>(() => ({
   borderRadius: "12px",
   border: `1px solid ${colors.gray200}`,
   boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
@@ -258,9 +258,9 @@ const ExclamationIcon = () => "!";
 const ArrowIcon = () => (
   <Box
     component="span"
-    sx={{ 
+    sx={{
       fontSize: "12px",
-      marginLeft: "4px"
+      marginLeft: "4px",
     }}
   >
     →
@@ -285,8 +285,16 @@ interface FieldConfig {
   type: string;
   placeholder?: string;
   helpText?: string;
-  options?: { value: string; label: string; }[];
+  options?: { value: string; label: string }[];
   showWhen?: string;
+}
+
+declare global {
+  interface Window {
+    FB: {
+      getLoginStatus: (callback: any) => any;
+    };
+  }
 }
 
 export const IntegrationsPage = () => {
@@ -294,28 +302,32 @@ export const IntegrationsPage = () => {
     {
       id: "meta",
       name: "Meta",
-      description: "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
+      description:
+        "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
       icon: <MetaIcon />,
       connected: true,
     },
     {
       id: "google-ads",
       name: "Google Ads",
-      description: "Access detailed performance metrics to optimize ad spend and track conversions.",
+      description:
+        "Access detailed performance metrics to optimize ad spend and track conversions.",
       icon: <GoogleAdsIcon />,
       connected: true,
     },
     {
       id: "google-analytics",
       name: "Google Analytics 4",
-      description: "Track website analytics, user behavior, and conversion metrics.",
+      description:
+        "Track website analytics, user behavior, and conversion metrics.",
       icon: <GoogleAnalyticsIcon />,
       connected: false,
     },
     {
       id: "shopify",
       name: "Shopify",
-      description: "Connect your Shopify store to track sales, orders, and customer data.",
+      description:
+        "Connect your Shopify store to track sales, orders, and customer data.",
       icon: <ShopifyIcon />,
       connected: false,
     },
@@ -327,7 +339,9 @@ export const IntegrationsPage = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isModifying, setIsModifying] = useState(false);
-  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>({});
+  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
+    {}
+  );
 
   const handleConnect = (integrationId: string) => {
     setOpenModal(integrationId);
@@ -337,7 +351,7 @@ export const IntegrationsPage = () => {
   };
 
   const handleViewDetails = (integrationId: string) => {
-    const integration = integrations.find(i => i.id === integrationId);
+    const integration = integrations.find((i) => i.id === integrationId);
     if (integration?.connected) {
       setOpenDetailsModal(integrationId);
       // Load existing connection data for display (in real app, fetch from API)
@@ -358,9 +372,9 @@ export const IntegrationsPage = () => {
   };
 
   const toggleFieldVisibility = (fieldKey: string) => {
-    setVisibleFields(prev => ({
+    setVisibleFields((prev) => ({
       ...prev,
-      [fieldKey]: !prev[fieldKey]
+      [fieldKey]: !prev[fieldKey],
     }));
   };
 
@@ -372,9 +386,9 @@ export const IntegrationsPage = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -382,7 +396,7 @@ export const IntegrationsPage = () => {
     const newErrors: Record<string, string> = {};
     const requiredFields = getRequiredFields(integrationId);
 
-    requiredFields.forEach(field => {
+    requiredFields.forEach((field) => {
       if (!formData[field.key] || formData[field.key].trim() === "") {
         newErrors[field.key] = `${field.label} is required`;
       }
@@ -398,18 +412,18 @@ export const IntegrationsPage = () => {
     setLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       if (!isModifying) {
-        setIntegrations(prev => 
-          prev.map(integration => 
-            integration.id === openModal 
+        setIntegrations((prev) =>
+          prev.map((integration) =>
+            integration.id === openModal
               ? { ...integration, connected: true }
               : integration
           )
         );
       }
-      
+
       handleCloseModal();
     } catch (error) {
       console.error("Connection failed:", error);
@@ -421,71 +435,77 @@ export const IntegrationsPage = () => {
   const getMockConnectionData = (integrationId: string): ConnectionFormData => {
     // Mock data for demonstration - in real app, this would come from API
     const mockData: Record<string, ConnectionFormData> = {
-      "meta": {
+      meta: {
         appId: "1234567890123456",
         appSecret: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
-        accessToken: "EAABwzLixnjYBOZC8ZCqVZBZCxJZBZCqVZBZCxJZBZCqVZBZCxJZBZCqVZBZCxJ"
+        accessToken:
+          "EAABwzLixnjYBOZC8ZCqVZBZCxJZBZCqVZBZCxJZBZCqVZBZCxJZBZCqVZBZCxJ",
       },
       "google-ads": {
-        clientId: "123456789-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com",
+        clientId:
+          "123456789-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com",
         clientSecret: "GOCSPX-abcdefghijklmnopqrstuvwx",
-        refreshToken: "1//0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        refreshToken:
+          "1//0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
         developerToken: "abcdefghijklmnopqr",
-        customerId: "1234567890"
+        customerId: "1234567890",
       },
       "google-analytics": {
         authMethod: "oauth",
-        clientId: "123456789-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com",
+        clientId:
+          "123456789-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com",
         clientSecret: "GOCSPX-abcdefghijklmnopqrstuvwx",
-        refreshToken: "1//0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        propertyId: "123456789"
+        refreshToken:
+          "1//0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        propertyId: "123456789",
       },
-      "shopify": {
+      shopify: {
         shopDomain: "my-awesome-shop",
-        accessToken: "shpat_abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        apiKey: "abcdefghijklmnopqrstuvwxyz123456"
-      }
+        accessToken:
+          "shpat_abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        apiKey: "abcdefghijklmnopqrstuvwxyz123456",
+      },
     };
     return mockData[integrationId] || {};
   };
 
-  
-
   const renderDetailsModal = () => {
     if (!openDetailsModal) return null;
 
-    const integration = integrations.find(i => i.id === openDetailsModal);
+    const integration = integrations.find((i) => i.id === openDetailsModal);
     if (!integration) return null;
 
     const fields = getRequiredFields(openDetailsModal);
     const connectionData = formData;
 
     return (
-      <Dialog 
-        open={!!openDetailsModal} 
+      <Dialog
+        open={!!openDetailsModal}
         onClose={handleCloseDetailsModal}
         maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
             borderRadius: "12px",
-            padding: "8px"
-          }
+            padding: "8px",
+          },
         }}
       >
-        <DialogTitle sx={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
-          alignItems: "center",
-          padding: "20px 24px 16px"
-        }}>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px 24px 16px",
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {integration.icon}
             <Box>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {integration.name} Connection
               </Typography>
-              <Chip 
+              <Chip
                 icon={<CheckIcon />}
                 label="Connected"
                 size="small"
@@ -494,7 +514,7 @@ export const IntegrationsPage = () => {
                   fontSize: "10px",
                   backgroundColor: colors.green100,
                   color: colors.green700,
-                  mt: 0.5
+                  mt: 0.5,
                 }}
               />
             </Box>
@@ -507,19 +527,24 @@ export const IntegrationsPage = () => {
         <DialogContent sx={{ padding: "0 24px" }}>
           <Alert severity="success" sx={{ mb: 3 }}>
             <Typography variant="body2">
-              Your {integration.name} account is successfully connected and active.
+              Your {integration.name} account is successfully connected and
+              active.
             </Typography>
           </Alert>
 
-          <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: colors.gray800 }}>
+          <Typography
+            variant="subtitle2"
+            sx={{ mb: 2, fontWeight: 600, color: colors.gray800 }}
+          >
             Connection Details
           </Typography>
 
           <Stack spacing={2.5}>
             {fields.map((field) => {
               // Skip conditional fields for details view or show based on stored config
-              if (field.showWhen && field.key !== 'authMethod') {
-                const [conditionField, conditionValue] = field.showWhen.split('=');
+              if (field.showWhen && field.key !== "authMethod") {
+                const [conditionField, conditionValue] =
+                  field.showWhen.split("=");
                 if (connectionData[conditionField] !== conditionValue) {
                   return null;
                 }
@@ -528,50 +553,70 @@ export const IntegrationsPage = () => {
               const value = connectionData[field.key];
               if (!value) return null;
 
-              const isSecretField = field.type === "password" || field.type === "textarea";
+              const isSecretField =
+                field.type === "password" || field.type === "textarea";
               const isFieldVisible = visibleFields[field.key];
-              const displayValue = isSecretField && !isFieldVisible ? "••••••••••••••••••••••••••••••••" : value;
+              const displayValue =
+                isSecretField && !isFieldVisible
+                  ? "••••••••••••••••••••••••••••••••"
+                  : value;
 
               return (
-                <Box key={field.key} sx={{ 
-                  padding: "12px", 
-                  backgroundColor: colors.gray50, 
-                  borderRadius: "8px",
-                  border: `1px solid ${colors.gray200}`,
-                  position: "relative"
-                }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ 
-                      color: colors.gray600, 
-                      fontSize: "11px",
-                      fontWeight: 500,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px"
-                    }}>
+                <Box
+                  key={field.key}
+                  sx={{
+                    padding: "12px",
+                    backgroundColor: colors.gray50,
+                    borderRadius: "8px",
+                    border: `1px solid ${colors.gray200}`,
+                    position: "relative",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      mb: 0.5,
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: colors.gray600,
+                        fontSize: "11px",
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
                       {field.label}
                     </Typography>
                     {isSecretField && (
                       <IconButton
                         size="small"
                         onClick={() => toggleFieldVisibility(field.key)}
-                        sx={{ 
+                        sx={{
                           padding: "2px",
-                          "&:hover": { 
-                            backgroundColor: colors.gray200 
-                          }
+                          "&:hover": {
+                            backgroundColor: colors.gray200,
+                          },
                         }}
                       >
                         <EyeIcon visible={isFieldVisible} />
                       </IconButton>
                     )}
                   </Box>
-                  <Typography variant="body2" sx={{ 
-                    color: colors.gray800,
-                    fontFamily: isSecretField ? "monospace" : "inherit",
-                    fontSize: isSecretField ? "13px" : "14px",
-                    wordBreak: "break-all",
-                    userSelect: isFieldVisible ? "text" : "none"
-                  }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: colors.gray800,
+                      fontFamily: isSecretField ? "monospace" : "inherit",
+                      fontSize: isSecretField ? "13px" : "14px",
+                      wordBreak: "break-all",
+                      userSelect: isFieldVisible ? "text" : "none",
+                    }}
+                  >
                     {displayValue}
                   </Typography>
                 </Box>
@@ -579,20 +624,25 @@ export const IntegrationsPage = () => {
             })}
           </Stack>
 
-          <Box sx={{ 
-            mt: 3, 
-            padding: "12px", 
-            backgroundColor: colors.blue50, 
-            borderRadius: "8px",
-            border: `1px solid ${colors.blue200}`
-          }}>
-            <Typography variant="caption" sx={{ 
-              color: colors.blue700, 
-              fontSize: "11px",
-              fontWeight: 500,
-              textTransform: "uppercase",
-              letterSpacing: "0.5px"
-            }}>
+          <Box
+            sx={{
+              mt: 3,
+              padding: "12px",
+              backgroundColor: colors.blue50,
+              borderRadius: "8px",
+              border: `1px solid ${colors.blue200}`,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                color: colors.blue700,
+                fontSize: "11px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
               Connection Status
             </Typography>
             <Typography variant="body2" sx={{ color: colors.blue800, mt: 0.5 }}>
@@ -607,11 +657,11 @@ export const IntegrationsPage = () => {
         <Divider sx={{ my: 2 }} />
 
         <DialogActions sx={{ padding: "16px 24px 20px", gap: 1 }}>
-          <Button 
+          <Button
             onClick={handleCloseDetailsModal}
-            sx={{ 
+            sx={{
               color: colors.gray600,
-              "&:hover": { backgroundColor: colors.gray50 }
+              "&:hover": { backgroundColor: colors.gray50 },
             }}
           >
             Close
@@ -626,7 +676,7 @@ export const IntegrationsPage = () => {
               "&:hover": {
                 background: colors.blue50,
                 border: `1px solid ${colors.blue700}`,
-              }
+              },
             }}
           >
             Modify Account
@@ -638,35 +688,148 @@ export const IntegrationsPage = () => {
 
   const getRequiredFields = (integrationId: string): FieldConfig[] => {
     const fieldConfigs: Record<string, FieldConfig[]> = {
-      "meta": [
-        { key: "appId", label: "App ID", type: "text", placeholder: "Enter your Facebook App ID", helpText: "Found in Facebook Developer Console under Basic Settings" },
-        { key: "appSecret", label: "App Secret", type: "password", placeholder: "Enter your Facebook App Secret", helpText: "Click 'Show' next to App Secret in Facebook Developer Console" },
-        { key: "accessToken", label: "Access Token", type: "password", placeholder: "Enter your access token", helpText: "Generated from Graph API Explorer or your app" }
+      meta: [
+        {
+          key: "appId",
+          label: "App ID",
+          type: "text",
+          placeholder: "Enter your Facebook App ID",
+          helpText: "Found in Facebook Developer Console under Basic Settings",
+        },
+        {
+          key: "appSecret",
+          label: "App Secret",
+          type: "password",
+          placeholder: "Enter your Facebook App Secret",
+          helpText:
+            "Click 'Show' next to App Secret in Facebook Developer Console",
+        },
+        {
+          key: "accessToken",
+          label: "Access Token",
+          type: "password",
+          placeholder: "Enter your access token",
+          helpText: "Generated from Graph API Explorer or your app",
+        },
       ],
       "google-ads": [
-        { key: "clientId", label: "Client ID", type: "text", placeholder: "123456-abcdef.apps.googleusercontent.com", helpText: "OAuth 2.0 Client ID from Google Cloud Console" },
-        { key: "clientSecret", label: "Client Secret", type: "password", placeholder: "Enter your client secret", helpText: "OAuth 2.0 Client Secret from Google Cloud Console" },
-        { key: "refreshToken", label: "Refresh Token", type: "password", placeholder: "1//0abcdefghijkl...", helpText: "Generated using OAuth2 flow" },
-        { key: "developerToken", label: "Developer Token", type: "password", placeholder: "Enter your developer token", helpText: "From Google Ads Manager Account API Center" },
-        { key: "customerId", label: "Customer ID", type: "text", placeholder: "1234567890", helpText: "10-digit Google Ads Customer ID (without dashes)" }
+        {
+          key: "clientId",
+          label: "Client ID",
+          type: "text",
+          placeholder: "123456-abcdef.apps.googleusercontent.com",
+          helpText: "OAuth 2.0 Client ID from Google Cloud Console",
+        },
+        {
+          key: "clientSecret",
+          label: "Client Secret",
+          type: "password",
+          placeholder: "Enter your client secret",
+          helpText: "OAuth 2.0 Client Secret from Google Cloud Console",
+        },
+        {
+          key: "refreshToken",
+          label: "Refresh Token",
+          type: "password",
+          placeholder: "1//0abcdefghijkl...",
+          helpText: "Generated using OAuth2 flow",
+        },
+        {
+          key: "developerToken",
+          label: "Developer Token",
+          type: "password",
+          placeholder: "Enter your developer token",
+          helpText: "From Google Ads Manager Account API Center",
+        },
+        {
+          key: "customerId",
+          label: "Customer ID",
+          type: "text",
+          placeholder: "1234567890",
+          helpText: "10-digit Google Ads Customer ID (without dashes)",
+        },
       ],
       "google-analytics": [
-        { key: "authMethod", label: "Authentication Method", type: "select", options: [
-          { value: "oauth", label: "OAuth 2.0 (Recommended)" },
-          { value: "serviceAccount", label: "Service Account" }
-        ]},
-        { key: "clientId", label: "Client ID", type: "text", placeholder: "123456-abcdef.apps.googleusercontent.com", helpText: "OAuth 2.0 Client ID from Google Cloud Console", showWhen: "authMethod=oauth" },
-        { key: "clientSecret", label: "Client Secret", type: "password", placeholder: "Enter your client secret", helpText: "OAuth 2.0 Client Secret", showWhen: "authMethod=oauth" },
-        { key: "refreshToken", label: "Refresh Token", type: "password", placeholder: "1//0abcdefghijkl...", helpText: "Generated using OAuth2 flow", showWhen: "authMethod=oauth" },
-        { key: "serviceAccountEmail", label: "Service Account Email", type: "text", placeholder: "service-account@project.iam.gserviceaccount.com", helpText: "Email from service account JSON file", showWhen: "authMethod=serviceAccount" },
-        { key: "privateKey", label: "Private Key", type: "textarea", placeholder: "-----BEGIN PRIVATE KEY-----...", helpText: "Private key from service account JSON file", showWhen: "authMethod=serviceAccount" },
-        { key: "propertyId", label: "GA4 Property ID", type: "text", placeholder: "123456789", helpText: "Found in GA4 Admin > Property Settings" }
+        {
+          key: "authMethod",
+          label: "Authentication Method",
+          type: "select",
+          options: [
+            { value: "oauth", label: "OAuth 2.0 (Recommended)" },
+            { value: "serviceAccount", label: "Service Account" },
+          ],
+        },
+        {
+          key: "clientId",
+          label: "Client ID",
+          type: "text",
+          placeholder: "123456-abcdef.apps.googleusercontent.com",
+          helpText: "OAuth 2.0 Client ID from Google Cloud Console",
+          showWhen: "authMethod=oauth",
+        },
+        {
+          key: "clientSecret",
+          label: "Client Secret",
+          type: "password",
+          placeholder: "Enter your client secret",
+          helpText: "OAuth 2.0 Client Secret",
+          showWhen: "authMethod=oauth",
+        },
+        {
+          key: "refreshToken",
+          label: "Refresh Token",
+          type: "password",
+          placeholder: "1//0abcdefghijkl...",
+          helpText: "Generated using OAuth2 flow",
+          showWhen: "authMethod=oauth",
+        },
+        {
+          key: "serviceAccountEmail",
+          label: "Service Account Email",
+          type: "text",
+          placeholder: "service-account@project.iam.gserviceaccount.com",
+          helpText: "Email from service account JSON file",
+          showWhen: "authMethod=serviceAccount",
+        },
+        {
+          key: "privateKey",
+          label: "Private Key",
+          type: "textarea",
+          placeholder: "-----BEGIN PRIVATE KEY-----...",
+          helpText: "Private key from service account JSON file",
+          showWhen: "authMethod=serviceAccount",
+        },
+        {
+          key: "propertyId",
+          label: "GA4 Property ID",
+          type: "text",
+          placeholder: "123456789",
+          helpText: "Found in GA4 Admin > Property Settings",
+        },
       ],
-      "shopify": [
-        { key: "shopDomain", label: "Shop Domain", type: "text", placeholder: "your-shop-name", helpText: "Your shop name from your-shop-name.myshopify.com" },
-        { key: "accessToken", label: "Admin API Access Token", type: "password", placeholder: "shpat_...", helpText: "Generated from your custom app in Shopify Admin" },
-        { key: "apiKey", label: "API Key", type: "text", placeholder: "Enter your API key", helpText: "From your custom app's API credentials" }
-      ]
+      shopify: [
+        {
+          key: "shopDomain",
+          label: "Shop Domain",
+          type: "text",
+          placeholder: "your-shop-name",
+          helpText: "Your shop name from your-shop-name.myshopify.com",
+        },
+        {
+          key: "accessToken",
+          label: "Admin API Access Token",
+          type: "password",
+          placeholder: "shpat_...",
+          helpText: "Generated from your custom app in Shopify Admin",
+        },
+        {
+          key: "apiKey",
+          label: "API Key",
+          type: "text",
+          placeholder: "Enter your API key",
+          helpText: "From your custom app's API credentials",
+        },
+      ],
     };
 
     return fieldConfigs[integrationId as keyof typeof fieldConfigs] || [];
@@ -675,31 +838,33 @@ export const IntegrationsPage = () => {
   const renderConnectionModal = () => {
     if (!openModal) return null;
 
-    const integration = integrations.find(i => i.id === openModal);
+    const integration = integrations.find((i) => i.id === openModal);
     if (!integration) return null;
 
     const fields = getRequiredFields(openModal);
     const authMethod = formData.authMethod;
 
     return (
-      <Dialog 
-        open={!!openModal} 
+      <Dialog
+        open={!!openModal}
         onClose={handleCloseModal}
         maxWidth="sm"
         fullWidth
         PaperProps={{
           sx: {
             borderRadius: "12px",
-            padding: "8px"
-          }
+            padding: "8px",
+          },
         }}
       >
-        <DialogTitle sx={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
-          alignItems: "center",
-          padding: "20px 24px 16px"
-        }}>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px 24px 16px",
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             {integration.icon}
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -714,13 +879,12 @@ export const IntegrationsPage = () => {
         <DialogContent sx={{ padding: "0 24px" }}>
           <Alert severity={isModifying ? "warning" : "info"} sx={{ mb: 3 }}>
             <Typography variant="body2">
-              {isModifying 
+              {isModifying
                 ? `Update your ${integration.name} connection credentials. Changes will take effect immediately.`
-                : `To connect ${integration.name}, you'll need to provide your API credentials.`
-              }
-              <Link 
-                href={getDocumentationLink(openModal)} 
-                target="_blank" 
+                : `To connect ${integration.name}, you'll need to provide your API credentials.`}
+              <Link
+                href={getDocumentationLink(openModal)}
+                target="_blank"
                 sx={{ ml: 1 }}
               >
                 View setup guide →
@@ -732,7 +896,8 @@ export const IntegrationsPage = () => {
             {fields.map((field) => {
               // Check if field should be shown based on conditions
               if (field.showWhen) {
-                const [conditionField, conditionValue] = field.showWhen.split('=');
+                const [conditionField, conditionValue] =
+                  field.showWhen.split("=");
                 if (formData[conditionField] !== conditionValue) {
                   return null;
                 }
@@ -744,7 +909,9 @@ export const IntegrationsPage = () => {
                     <InputLabel>{field.label}</InputLabel>
                     <Select
                       value={formData[field.key] || ""}
-                      onChange={(e) => handleInputChange(field.key, e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(field.key, e.target.value)
+                      }
                       label={field.label}
                       error={!!errors[field.key]}
                     >
@@ -755,7 +922,10 @@ export const IntegrationsPage = () => {
                       ))}
                     </Select>
                     {field.helpText && (
-                      <Typography variant="caption" sx={{ mt: 1, color: colors.gray600 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ mt: 1, color: colors.gray600 }}
+                      >
                         {field.helpText}
                       </Typography>
                     )}
@@ -771,15 +941,17 @@ export const IntegrationsPage = () => {
                     type={field.type === "password" ? "password" : "text"}
                     placeholder={field.placeholder}
                     value={formData[field.key] || ""}
-                    onChange={(e) => handleInputChange(field.key, e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(field.key, e.target.value)
+                    }
                     error={!!errors[field.key]}
                     helperText={errors[field.key] || field.helpText}
                     multiline={field.type === "textarea"}
                     rows={field.type === "textarea" ? 4 : 1}
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        borderRadius: "8px"
-                      }
+                        borderRadius: "8px",
+                      },
                     }}
                   />
                 </Box>
@@ -787,23 +959,25 @@ export const IntegrationsPage = () => {
             })}
           </Stack>
 
-          {openModal === "google-analytics" && authMethod === "serviceAccount" && (
-            <Alert severity="warning" sx={{ mt: 2 }}>
-              <Typography variant="body2">
-                Remember to add the service account email to your GA4 property with Viewer permissions.
-              </Typography>
-            </Alert>
-          )}
+          {openModal === "google-analytics" &&
+            authMethod === "serviceAccount" && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                <Typography variant="body2">
+                  Remember to add the service account email to your GA4 property
+                  with Viewer permissions.
+                </Typography>
+              </Alert>
+            )}
         </DialogContent>
 
         <Divider sx={{ my: 2 }} />
 
         <DialogActions sx={{ padding: "16px 24px 20px", gap: 1 }}>
-          <Button 
+          <Button
             onClick={handleCloseModal}
-            sx={{ 
+            sx={{
               color: colors.gray600,
-              "&:hover": { backgroundColor: colors.gray50 }
+              "&:hover": { backgroundColor: colors.gray50 },
             }}
           >
             Cancel
@@ -813,7 +987,13 @@ export const IntegrationsPage = () => {
             disabled={loading}
             startIcon={loading ? <CircularProgress size={16} /> : null}
           >
-            {loading ? (isModifying ? "Updating..." : "Connecting...") : (isModifying ? "Update Connection" : "Connect")}
+            {loading
+              ? isModifying
+                ? "Updating..."
+                : "Connecting..."
+              : isModifying
+                ? "Update Connection"
+                : "Connect"}
           </ModalConnectButton>
         </DialogActions>
       </Dialog>
@@ -822,13 +1002,41 @@ export const IntegrationsPage = () => {
 
   const getDocumentationLink = (integrationId: string) => {
     const links = {
-      "meta": "https://developers.facebook.com/docs/facebook-login/guides/access-tokens/",
-      "google-ads": "https://developers.google.com/google-ads/api/docs/first-call/overview",
-      "google-analytics": "https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart-client",
-      "shopify": "https://shopify.dev/docs/apps/auth/get-access-tokens"
+      meta: "https://developers.facebook.com/docs/facebook-login/guides/access-tokens/",
+      "google-ads":
+        "https://developers.google.com/google-ads/api/docs/first-call/overview",
+      "google-analytics":
+        "https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart-client",
+      shopify: "https://shopify.dev/docs/apps/auth/get-access-tokens",
     };
     return links[integrationId as keyof typeof links] || "#";
   };
+
+  const onFbInit = () => {
+    window.FB.getLoginStatus(function (response: any) {
+      console.log({ response });
+    });
+  };
+
+  // useEffect(() => {
+  //   window.addEventListener("");
+  // });
+
+  useEffect(() => {
+    (function (d, s, id) {
+      const fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      const js = d.createElement(s);
+      js.id = id;
+      js.setAttribute(
+        "src",
+        "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=1095248368702808"
+      );
+      fjs?.parentNode?.insertBefore(js, fjs);
+    })(document, "script", "facebook-jssdk");
+  }, []);
 
   return (
     <IntegrationsContainer>
@@ -836,13 +1044,13 @@ export const IntegrationsPage = () => {
         {integrations.map((integration) => (
           <Grid size={{ xs: 12, md: 6, lg: 4 }} key={integration.id}>
             <IntegrationCard connected={integration.connected}>
-              <CardContent 
-                sx={{ 
-                  padding: "24px", 
-                  height: "100%", 
-                  display: "flex", 
+              <CardContent
+                sx={{
+                  padding: "24px",
+                  height: "100%",
+                  display: "flex",
                   flexDirection: "column",
-                  justifyContent: "space-between"
+                  justifyContent: "space-between",
                 }}
               >
                 {integration.connected ? (
@@ -858,7 +1066,10 @@ export const IntegrationsPage = () => {
                 )}
 
                 <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                  <Stack alignItems="center" sx={{ marginBottom: "16px", marginTop: "8px" }}>
+                  <Stack
+                    alignItems="center"
+                    sx={{ marginBottom: "16px", marginTop: "8px" }}
+                  >
                     {integration.icon}
                     <Typography
                       variant="h6"
@@ -888,13 +1099,13 @@ export const IntegrationsPage = () => {
                   </Typography>
                 </Box>
 
-                <Stack 
-                  direction="row" 
+                <Stack
+                  direction="row"
                   justifyContent="center"
                   alignItems="center"
-                  sx={{ 
+                  sx={{
                     gap: 2,
-                    marginTop: "auto"
+                    marginTop: "auto",
                   }}
                 >
                   {integration.connected ? (
@@ -917,6 +1128,15 @@ export const IntegrationsPage = () => {
             </IntegrationCard>
           </Grid>
         ))}
+        <div
+          className="fb-login-button"
+          data-width="138.283"
+          data-size=""
+          data-button-type=""
+          data-layout=""
+          data-auto-logout-link="false"
+          data-use-continue-as="false"
+        ></div>
       </Grid>
 
       {renderConnectionModal()}
