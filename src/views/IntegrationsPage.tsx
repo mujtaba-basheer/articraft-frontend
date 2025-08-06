@@ -293,6 +293,7 @@ declare global {
   interface Window {
     FB: {
       getLoginStatus: (callback: any) => any;
+      login: (callback: any, options: { scope: string }) => any;
     };
   }
 }
@@ -305,7 +306,7 @@ export const IntegrationsPage = () => {
       description:
         "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
       icon: <MetaIcon />,
-      connected: true,
+      connected: false,
     },
     {
       id: "google-ads",
@@ -1012,10 +1013,13 @@ export const IntegrationsPage = () => {
     return links[integrationId as keyof typeof links] || "#";
   };
 
-  const onFbInit = () => {
-    window.FB.getLoginStatus(function (response: any) {
-      console.log({ response });
-    });
+  const handleFbLoginInit = () => {
+    window.FB.login(
+      function (response: any) {
+        console.log({ response });
+      },
+      { scope: "public_profile,email" }
+    );
   };
 
   // useEffect(() => {
@@ -1042,6 +1046,75 @@ export const IntegrationsPage = () => {
   return (
     <IntegrationsContainer>
       <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <IntegrationCard connected={false}>
+            <CardContent
+              sx={{
+                padding: "24px",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <ActionRequiredIcon>
+                <ExclamationIcon />
+              </ActionRequiredIcon>
+
+              <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                <Stack
+                  alignItems="center"
+                  sx={{ marginBottom: "16px", marginTop: "8px" }}
+                >
+                  <MetaIcon />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: "18px",
+                      fontWeight: 600,
+                      color: colors.gray900,
+                      marginTop: "12px",
+                      textAlign: "center",
+                    }}
+                  >
+                    Meta
+                  </Typography>
+                </Stack>
+
+                <Typography
+                  sx={{
+                    fontSize: "14px",
+                    color: colors.gray600,
+                    lineHeight: 1.5,
+                    textAlign: "center",
+                    marginBottom: "20px",
+                    flex: 1,
+                  }}
+                >
+                  Monitor Facebook and Instagram ad campaigns, manage budgets,
+                  and improve targeting.
+                </Typography>
+              </Box>
+
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                  gap: 2,
+                  marginTop: "auto",
+                }}
+              >
+                <ConnectButton
+                  onClick={handleFbLoginInit}
+                  endIcon={<ArrowIcon />}
+                >
+                  Connect now
+                </ConnectButton>
+              </Stack>
+            </CardContent>
+          </IntegrationCard>
+        </Grid>
         {integrations.map((integration) => (
           <Grid size={{ xs: 12, md: 6, lg: 4 }} key={integration.id}>
             <IntegrationCard connected={integration.connected}>
