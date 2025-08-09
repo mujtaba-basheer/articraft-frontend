@@ -47,11 +47,11 @@ export const menuItems: SidebarItemT[] = [
     path: "/ai-insights",
     iconName: "ElectricBoltOutlined",
   },
-  {
-    label: "Dashboard Builder",
-    path: "/dashboard-builder",
-    iconName: "ConstructionOutlined",
-  },
+  // {
+  //   label: "Dashboard Builder",
+  //   path: "/dashboard-builder",
+  //   iconName: "ConstructionOutlined",
+  // },
   {
     label: "Integrations",
     path: "/integrations",
