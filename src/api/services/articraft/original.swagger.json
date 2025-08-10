@@ -205,8 +205,8 @@
   },
   "info": {
     "contact": {},
-    "description": "LoopTrack Backend",
-    "title": "LoopTrack-Server",
+    "description": "Articraft Backend",
+    "title": "Articraft-Server",
     "version": "1.0"
   },
   "openapi": "3.0.0",
@@ -327,6 +327,52 @@
         "tags": ["auth-controller"]
       }
     },
+    "/api/shopify/auth": {
+      "get": {
+        "operationId": "beginAuth",
+        "parameters": [
+          {
+            "description": "Store slug",
+            "in": "query",
+            "name": "store",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": ""
+          }
+        },
+        "tags": ["shopify-controller"]
+      }
+    },
+    "/api/shopify/check": {
+      "get": {
+        "operationId": "authCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["shopify-controller"]
+      }
+    },
+    "/api/shopify/redirect": {
+      "get": {
+        "operationId": "handleRedirect",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": ""
+          }
+        },
+        "tags": ["shopify-controller"]
+      }
+    },
     "/api/user/{userId}": {
       "delete": {
         "operationId": "deleteUserById",
@@ -369,11 +415,11 @@
   },
   "servers": [
     {
-      "description": "LoopTrack API Base URL",
+      "description": "Articraft API Base URL",
       "url": "https://api.articraft.io"
     },
     {
-      "description": "LoopTrack API Base URL",
+      "description": "Articraft API Base URL",
       "url": "http://localhost:8080"
     }
   ],

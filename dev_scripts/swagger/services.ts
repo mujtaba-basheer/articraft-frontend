@@ -1,2 +1,2 @@
-export const services = ["loop-track"] as const;
+export const services = ["articraft"] as const;
 export type ApiService = (typeof services)[number];

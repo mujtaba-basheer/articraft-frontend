@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * LoopTrack-Server
- * LoopTrack Backend
+ * Articraft-Server
+ * Articraft Backend
  *
  * The version of the OpenAPI document: 1.0
  *

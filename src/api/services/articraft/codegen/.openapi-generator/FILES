@@ -8,6 +8,7 @@ configuration.ts
 docs/AuthControllerApi.md
 docs/DefaultApi.md
 docs/GoogleSignInRequestDto.md
+docs/ShopifyControllerApi.md
 docs/SignInRequestDto.md
 docs/SignInResponseDto.md
 docs/SignupRequestDto.md

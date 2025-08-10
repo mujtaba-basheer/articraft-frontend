@@ -28,10 +28,7 @@ async function downloadService(service: ApiService, rootPath: string) {
     chalk.yellow(`Downloading swagger for service ${chalk.green(service)}.`)
   );
   const apiDocsUrl = match(service)
-    .with(
-      "loop-track",
-      () => process.env.NEXT_PUBLIC_API_URL + "/api-docs/json"
-    )
+    .with("articraft", () => process.env.NEXT_PUBLIC_API_URL + "/api-docs/json")
     .exhaustive();
 
   const swaggerFolderPath = path.join(rootPath, "src/api/services", service);
