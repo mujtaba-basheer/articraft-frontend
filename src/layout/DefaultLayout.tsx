@@ -9,6 +9,7 @@ import { DashboardContent } from "../views/DashboardContent";
 import { AnalyticsContent } from "../views/AnalyticsContent";
 import { AttributionContent } from "../views/AttributionContent";
 import { IntegrationsPage } from "../views/IntegrationsPage";
+import { RevenueDashboard } from "../views/RevenueDashboard";
 
 // Type for page paths (should match the ones in menuItems)
 type PagePath = "/" | "/analytics" | "/attribution" | "/revenue" | "/reports" | 
@@ -27,39 +28,7 @@ const PageContent = ({ activePage }: { activePage: PagePath }) => {
       case "/integrations":
       return <IntegrationsPage />
     case "/revenue":
-      return (
-        <Box sx={{ 
-          padding: { xs: "24px", sm: "40px" },
-          textAlign: "center",
-          backgroundColor: "#ffffff", 
-          borderRadius: { xs: "8px", sm: "12px" },
-          border: "1px solid #e1e5e9",
-          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
-          margin: { xs: "12px", sm: "20px" }
-        }}>
-          <Typography
-            variant="h2"
-            sx={{
-              margin: "0 0 16px 0", 
-              color: "#1f2937",
-              fontSize: { xs: "20px", sm: "24px" },
-              fontWeight: 600
-            }}
-          >
-            Revenue Page
-          </Typography>
-          <Typography
-            sx={{
-              margin: "0", 
-              color: "#6b7280",
-              fontSize: { xs: "14px", sm: "16px" },
-              lineHeight: 1.6
-            }}
-          >
-            Monitor revenue streams and financial performance data will be displayed here.
-          </Typography>
-        </Box>
-      );
+      return <RevenueDashboard />
     default:
       const pageName = activePage.slice(1).charAt(0).toUpperCase() + activePage.slice(2).replace(/-/g, ' ');
       return (
