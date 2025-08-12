@@ -15,11 +15,11 @@ import {
   Link,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { authController } from "../api/services/loop-track";
+import { authController } from "../api/services/articraft";
 import { colors } from "../styles/colors";
 import { isAxiosError } from "axios";
 
-import logo from '../assets/4.png';
+import logo from "../assets/4.png";
 
 const LoginContainer = styled(Box)(() => ({
   minHeight: "100vh",
@@ -301,7 +301,9 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         <LoginCard>
           <CardContent sx={{ padding: "48px 40px" }}>
             <LogoSection>
-              <Logo><img src={logo} alt="" width="35"/></Logo>
+              <Logo>
+                <img src={logo} alt="" width="35" />
+              </Logo>
               <Typography
                 sx={{
                   fontSize: "24px",
@@ -309,7 +311,7 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
                   color: colors.gray900,
                 }}
               >
-               Articraft
+                Articraft
               </Typography>
             </LogoSection>
 

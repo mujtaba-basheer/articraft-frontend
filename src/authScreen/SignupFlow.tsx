@@ -17,9 +17,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { colors } from "../styles/colors";
-import { authController } from "../api/services/loop-track";
+import { authController } from "../api/services/articraft";
 import { isAxiosError } from "axios";
-import logo from '../assets/4.png';
+import logo from "../assets/4.png";
 
 const SignupContainer = styled(Box)(() => ({
   minHeight: "100vh",
@@ -481,7 +481,9 @@ export const SignupFlow = ({ onSignup, onBackToLogin }: SignupFlowProps) => {
     <Fade in={true}>
       <Box>
         <LogoSection>
-          <Logo><img src={logo} alt="" width="35"/></Logo>
+          <Logo>
+            <img src={logo} alt="" width="35" />
+          </Logo>
           <Typography
             sx={{ fontSize: "20px", fontWeight: 700, color: colors.gray900 }}
           >
