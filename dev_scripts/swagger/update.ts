@@ -39,7 +39,7 @@ async function updateService(service: ApiService, rootPath: string) {
 
   // update
   const updatedSwaggerJson = match(service)
-    .with("loop-track", () => applyLoopTrackUpdates(swaggerJson))
+    .with("articraft", () => applyLoopTrackUpdates(swaggerJson))
     .exhaustive();
 
   const keepDeprecatedOperationIds = new Set<string>([]);

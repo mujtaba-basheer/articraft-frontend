@@ -196,7 +196,7 @@
       }
     },
     "securitySchemes": {
-      "access-token": {
+      "bearer": {
         "bearerFormat": "JWT",
         "scheme": "bearer",
         "type": "http"
@@ -346,6 +346,11 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "tags": ["shopify-controller"]
       }
     },
@@ -358,6 +363,11 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "tags": ["shopify-controller"]
       }
     },
@@ -370,6 +380,11 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "tags": ["shopify-controller"]
       }
     },

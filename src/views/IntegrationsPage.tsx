@@ -15,7 +15,12 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { connectShopify, checkShopifyConnection, isAuthenticated } from "../api/services/articraft";
+import {
+  connectShopify,
+  checkShopifyConnection,
+  isAuthenticated,
+  shopifyController,
+} from "../api/services/articraft";
 
 interface Integration {
   id: string;
@@ -29,19 +34,22 @@ export const IntegrationsPage = () => {
     {
       id: "shopify",
       name: "Shopify",
-      description: "Connect your Shopify store to track sales, orders, and customer data.",
+      description:
+        "Connect your Shopify store to track sales, orders, and customer data.",
       connected: false,
     },
     {
       id: "meta",
       name: "Meta",
-      description: "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
+      description:
+        "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
       connected: false,
     },
     {
       id: "google-ads",
       name: "Google Ads",
-      description: "Access detailed performance metrics to optimize ad spend and track conversions.",
+      description:
+        "Access detailed performance metrics to optimize ad spend and track conversions.",
       connected: false,
     },
   ]);
@@ -56,13 +64,13 @@ export const IntegrationsPage = () => {
     const checkConnection = async () => {
       // Only check connection if user is authenticated
       if (!isAuthenticated()) {
-        console.log('User not authenticated, skipping connection check');
+        console.log("User not authenticated, skipping connection check");
         return;
       }
 
       const isConnected = await checkShopifyConnection();
-      setIntegrations(prev =>
-        prev.map(integration =>
+      setIntegrations((prev) =>
+        prev.map((integration) =>
           integration.id === "shopify"
             ? { ...integration, connected: isConnected }
             : integration
@@ -88,21 +96,24 @@ export const IntegrationsPage = () => {
     setError("");
 
     try {
-      await connectShopify(shopDomain);
-      
+      const response = await shopifyController.beginAuth(shopDomain);
+      console.log({ response });
+
       // Update connection status
-      setIntegrations(prev =>
-        prev.map(integration =>
-          integration.id === "shopify"
-            ? { ...integration, connected: true }
-            : integration
-        )
-      );
-      
+      // setIntegrations((prev) =>
+      //   prev.map((integration) =>
+      //     integration.id === "shopify"
+      //       ? { ...integration, connected: true }
+      //       : integration
+      //   )
+      // );
+
       setOpenModal(false);
       setShopDomain("");
     } catch (err: any) {
-      setError(err.message || "Failed to connect to Shopify. Please check your domain.");
+      setError(
+        err.message || "Failed to connect to Shopify. Please check your domain."
+      );
     } finally {
       setLoading(false);
     }
@@ -130,7 +141,8 @@ export const IntegrationsPage = () => {
           Integrations
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Connect your platforms to get unified insights and automate your campaigns.
+          Connect your platforms to get unified insights and automate your
+          campaigns.
         </Typography>
       </Box>
 
@@ -146,11 +158,11 @@ export const IntegrationsPage = () => {
       {/* Integration Cards - Using CSS Grid */}
       <Box
         sx={{
-          display: 'grid',
+          display: "grid",
           gridTemplateColumns: {
-            xs: '1fr',
-            md: 'repeat(2, 1fr)',
-            lg: 'repeat(3, 1fr)',
+            xs: "1fr",
+            md: "repeat(2, 1fr)",
+            lg: "repeat(3, 1fr)",
           },
           gap: 3,
         }}
@@ -202,7 +214,11 @@ export const IntegrationsPage = () => {
                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, mt: 2 }}>
                   {integration.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 3 }}
+                >
                   {integration.description}
                 </Typography>
               </Box>
@@ -224,7 +240,12 @@ export const IntegrationsPage = () => {
       </Box>
 
       {/* Shopify Connection Modal */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Connect Shopify Store</DialogTitle>
         <DialogContent>
           <Alert severity="info" sx={{ mb: 3 }}>
