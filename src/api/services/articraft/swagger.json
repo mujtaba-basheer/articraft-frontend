@@ -11,6 +11,16 @@
         "required": ["token"],
         "type": "object"
       },
+      "ShopifyAuthResponseDto": {
+        "properties": {
+          "link": {
+            "description": "Shopify Auth  URL",
+            "type": "string"
+          }
+        },
+        "required": ["link"],
+        "type": "object"
+      },
       "SignInRequestDto": {
         "properties": {
           "email": {
@@ -329,7 +339,7 @@
     },
     "/api/shopify/auth": {
       "get": {
-        "operationId": "beginAuth",
+        "operationId": "auth",
         "parameters": [
           {
             "description": "Store slug",
@@ -342,7 +352,14 @@
           }
         ],
         "responses": {
-          "302": {
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopifyAuthResponseDto"
+                }
+              }
+            },
             "description": ""
           }
         },

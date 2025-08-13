@@ -5,7 +5,6 @@ import {
   CardContent,
   Button,
   Typography,
-  Stack,
   Chip,
   Dialog,
   DialogTitle,
@@ -16,11 +15,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import {
-  connectShopify,
   checkShopifyConnection,
   isAuthenticated,
   shopifyController,
 } from "../api/services/articraft";
+import { isAxiosError } from "axios";
 
 interface Integration {
   id: string;
@@ -96,8 +95,8 @@ export const IntegrationsPage = () => {
     setError("");
 
     try {
-      const response = await shopifyController.beginAuth(shopDomain);
-      console.log({ response });
+      const { data } = await shopifyController.auth(shopDomain);
+      window.location.href = data.link;
 
       // Update connection status
       // setIntegrations((prev) =>
@@ -111,6 +110,9 @@ export const IntegrationsPage = () => {
       setOpenModal(false);
       setShopDomain("");
     } catch (err: any) {
+      if (isAxiosError(err)) {
+        console.log(err.request?.headers);
+      }
       setError(
         err.message || "Failed to connect to Shopify. Please check your domain."
       );

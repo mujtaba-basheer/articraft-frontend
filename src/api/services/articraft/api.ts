@@ -21,28 +21,8 @@ const configuration = new Configuration({
 });
 
 // API Controllers
-export const authController = new AuthControllerApi(configuration);
+export const authController = new AuthControllerApi();
 export const shopifyController = new ShopifyControllerApi(configuration);
-
-// Direct Shopify OAuth (bypassing backend CORS issues)
-export const connectShopify = async (shopDomain: string): Promise<void> => {
-  // For now, just redirect directly to simulate the connection
-  // In a real app, you would get these values from your Shopify app settings
-  const clientId = "your-shopify-client-id"; // Replace with actual client ID
-  const redirectUri = `${window.location.origin}/auth/shopify/callback`;
-  const scopes = "read_products,read_orders";
-
-  // Build Shopify OAuth URL
-  const authUrl =
-    `https://${shopDomain}.myshopify.com/admin/oauth/authorize?` +
-    `client_id=${clientId}&` +
-    `scope=${scopes}&` +
-    `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-    `state=${Date.now()}`;
-
-  // Redirect to Shopify
-  window.location.href = authUrl;
-};
 
 // Simple connection check (mock for now)
 export const checkShopifyConnection = async (): Promise<boolean> => {

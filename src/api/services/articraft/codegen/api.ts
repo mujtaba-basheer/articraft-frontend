@@ -55,6 +55,19 @@ export interface GoogleSignInRequestDto {
 /**
  *
  * @export
+ * @interface ShopifyAuthResponseDto
+ */
+export interface ShopifyAuthResponseDto {
+  /**
+   * Shopify Auth  URL
+   * @type {string}
+   * @memberof ShopifyAuthResponseDto
+   */
+  link: string;
+}
+/**
+ *
+ * @export
  * @interface SignInRequestDto
  */
 export interface SignInRequestDto {
@@ -909,6 +922,56 @@ export const ShopifyControllerApiAxiosParamCreator = function (
   return {
     /**
      *
+     * @param {string} store Store slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    auth: async (
+      store: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'store' is not null or undefined
+      assertParamExists("auth", "store", store);
+      const localVarPath = `/api/shopify/auth`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      if (store !== undefined) {
+        localVarQueryParameter["store"] = store;
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -934,56 +997,6 @@ export const ShopifyControllerApiAxiosParamCreator = function (
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {string} store Store slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    beginAuth: async (
-      store: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'store' is not null or undefined
-      assertParamExists("beginAuth", "store", store);
-      const localVarPath = `/api/shopify/auth`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = {
-        method: "GET",
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
-
-      if (store !== undefined) {
-        localVarQueryParameter["store"] = store;
-      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1054,6 +1067,38 @@ export const ShopifyControllerApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @param {string} store Store slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async auth(
+      store: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ShopifyAuthResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.auth(
+        store,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["ShopifyControllerApi.auth"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1067,35 +1112,6 @@ export const ShopifyControllerApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
       const localVarOperationServerBasePath =
         operationServerMap["ShopifyControllerApi.authCheck"]?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {string} store Store slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async beginAuth(
-      store: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.beginAuth(
-        store,
-        options,
-      );
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap["ShopifyControllerApi.beginAuth"]?.[
           localVarOperationServerIndex
         ]?.url;
       return (axios, basePath) =>
@@ -1147,26 +1163,26 @@ export const ShopifyControllerApiFactory = function (
   return {
     /**
      *
+     * @param {string} store Store slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    auth(
+      store: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ShopifyAuthResponseDto> {
+      return localVarFp
+        .auth(store, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     authCheck(options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .authCheck(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {string} store Store slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    beginAuth(
-      store: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .beginAuth(store, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -1191,6 +1207,19 @@ export const ShopifyControllerApiFactory = function (
 export class ShopifyControllerApi extends BaseAPI {
   /**
    *
+   * @param {string} store Store slug
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShopifyControllerApi
+   */
+  public auth(store: string, options?: RawAxiosRequestConfig) {
+    return ShopifyControllerApiFp(this.configuration)
+      .auth(store, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ShopifyControllerApi
@@ -1198,19 +1227,6 @@ export class ShopifyControllerApi extends BaseAPI {
   public authCheck(options?: RawAxiosRequestConfig) {
     return ShopifyControllerApiFp(this.configuration)
       .authCheck(options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {string} store Store slug
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ShopifyControllerApi
-   */
-  public beginAuth(store: string, options?: RawAxiosRequestConfig) {
-    return ShopifyControllerApiFp(this.configuration)
-      .beginAuth(store, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
