@@ -508,8 +508,8 @@ export const LoginPage = ({ onLogin, onSignup }: LoginPageProps) => {
         </LoginCard>
 
         <FooterContainer>
-          <Typography sx={{ fontSize: "12px" }}>© LoopTrack 2025</Typography>
-          <Typography sx={{ fontSize: "12px" }}>help@looptrack.ai</Typography>
+          <Typography sx={{ fontSize: "12px" }}>© articraft 2025</Typography>
+          <Typography sx={{ fontSize: "12px" }}>help@articraft.io</Typography>
         </FooterContainer>
       </Box>
     </LoginContainer>
