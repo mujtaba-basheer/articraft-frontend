@@ -21,6 +21,7 @@ import {
 } from "../api/services/articraft";
 import { isAxiosError } from "axios";
 import { colors } from "../styles";
+import axios from "axios";
 
 interface Integration {
   id: string;
@@ -45,7 +46,7 @@ export const IntegrationsPage = () => {
       name: "Meta",
       description:
         "Monitor Facebook and Instagram ad campaigns, manage budgets, and improve targeting.",
-      connected: true,
+      connected: false,
       logo: "📘",
     },
     {
@@ -63,26 +64,39 @@ export const IntegrationsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Check Shopify connection on load (only if authenticated)
-  useEffect(() => {
-    const checkConnection = async () => {
-      // Only check connection if user is authenticated
-      if (!isAuthenticated()) {
-        console.log("User not authenticated, skipping connection check");
-        return;
-      }
+ // Check integrations dynamically from /api/user/me
+useEffect(() => {
+  const fetchUserIntegrations = async () => {
+    if (!isAuthenticated()) {
+      console.log("User not authenticated, skipping connection check");
+      return;
+    }
 
-      const isConnected = await checkShopifyConnection();
+    try {
+      const token = localStorage.getItem("looptrack_access_token");
+      const { data } = await axios.get("https://api.articraft.io/api/user/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Update integration state based on API response
       setIntegrations((prev) =>
-        prev.map((integration) =>
-          integration.id === "shopify"
-            ? { ...integration, connected: isConnected }
-            : integration
-        )
+        prev.map((integration) => {
+          if (integration.id === "shopify") {
+            return { ...integration, connected: data.shopifyConnected };
+          }
+          if (integration.id === "meta") {
+            return { ...integration, connected: data.metaConnected };
+          }
+          return integration; // keep Google Ads unchanged for now
+        })
       );
-    };
-    checkConnection();
-  }, []);
+    } catch (err) {
+      console.error("Failed to fetch /api/user/me", err);
+    }
+  };
+
+  fetchUserIntegrations();
+}, []);
+
 
   const handleShopifyConnect = async () => {
     if (!shopDomain.trim()) {
