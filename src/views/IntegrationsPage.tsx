@@ -276,24 +276,7 @@ useEffect(() => {
 
               {/* Action Section */}
               <Box sx={{ mt: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Button
-                  variant="text"
-                  size="small"
-                  sx={{
-                    color: '#666',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    textTransform: 'none',
-                    padding: '4px 8px',
-                    minWidth: 'auto',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                      textDecoration: 'underline',
-                    }
-                  }}
-                >
-                  More details →
-                </Button>
+              
 
                 {!integration.connected && (
                   <Button
