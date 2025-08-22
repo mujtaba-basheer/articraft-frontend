@@ -318,15 +318,7 @@ export const PerformanceHub = () => {
   return (
     <PerformanceContainer>
       {/* Header */}
-      <HeaderSection>
-        <Box>
-         
-        </Box>
-        <Stack direction="row" spacing={2}>
-          <ExportButton>Export Data</ExportButton>
-          <CreateCampaignButton>Create Campaign</CreateCampaignButton>
-        </Stack>
-      </HeaderSection>
+     
 
       {/* Suggested Actions */}
       <SuggestionsSection>
