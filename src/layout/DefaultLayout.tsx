@@ -12,6 +12,7 @@ import { IntegrationsPage } from "../views/IntegrationsPage";
 import { RevenueDashboard } from "../views/RevenueDashboard";
 import { PerformanceHub } from "../views/PerformanceHub";
 import CustomerJourney from "../views/CustomerJourney";
+import SettingsPage from "../views/SettingsPage";
 
 // Type for page paths (should match the ones in menuItems)
 type PagePath = "/" | "/analytics" | "/attribution" | "/revenue" | "/reports" | 
@@ -35,6 +36,8 @@ const PageContent = ({ activePage }: { activePage: PagePath }) => {
       return <PerformanceHub />
       case "/customer-journey":
       return <CustomerJourney />
+      case "/settings":
+      return <SettingsPage />
     default:
       const pageName = activePage.slice(1).charAt(0).toUpperCase() + activePage.slice(2).replace(/-/g, ' ');
       return (
