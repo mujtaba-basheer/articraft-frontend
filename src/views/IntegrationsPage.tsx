@@ -64,39 +64,41 @@ export const IntegrationsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- // Check integrations dynamically from /api/user/me
-useEffect(() => {
-  const fetchUserIntegrations = async () => {
-    if (!isAuthenticated()) {
-      console.log("User not authenticated, skipping connection check");
-      return;
-    }
+  // Check integrations dynamically from /api/user/me
+  useEffect(() => {
+    const fetchUserIntegrations = async () => {
+      if (!isAuthenticated()) {
+        console.log("User not authenticated, skipping connection check");
+        return;
+      }
 
-    try {
-      const token = localStorage.getItem("looptrack_access_token");
-      const { data } = await axios.get("https://api.articraft.io/api/user/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // Update integration state based on API response
-      setIntegrations((prev) =>
-        prev.map((integration) => {
-          if (integration.id === "shopify") {
-            return { ...integration, connected: data.shopifyConnected };
+      try {
+        const token = localStorage.getItem("looptrack_access_token");
+        const { data } = await axios.get(
+          "https://api.articraft.io/api/user/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
-          if (integration.id === "meta") {
-            return { ...integration, connected: data.metaConnected };
-          }
-          return integration; // keep Google Ads unchanged for now
-        })
-      );
-    } catch (err) {
-      console.error("Failed to fetch /api/user/me", err);
-    }
-  };
+        );
+        // Update integration state based on API response
+        setIntegrations((prev) =>
+          prev.map((integration) => {
+            if (integration.id === "shopify") {
+              return { ...integration, connected: data.shopifyConnected };
+            }
+            if (integration.id === "meta") {
+              return { ...integration, connected: data.metaConnected };
+            }
+            return integration; // keep Google Ads unchanged for now
+          })
+        );
+      } catch (err) {
+        console.error("Failed to fetch /api/user/me", err);
+      }
+    };
 
-  fetchUserIntegrations();
-}, []);
-
+    fetchUserIntegrations();
+  }, []);
 
   const handleShopifyConnect = async () => {
     if (!shopDomain.trim()) {
@@ -152,14 +154,14 @@ useEffect(() => {
           label="Connected"
           size="small"
           sx={{
-            backgroundColor: '#e8f5e8',
-            color: '#2e7d32',
+            backgroundColor: "#e8f5e8",
+            color: "#2e7d32",
             fontWeight: 500,
-            fontSize: '12px',
-            height: '24px',
-            '& .MuiChip-label': {
+            fontSize: "12px",
+            height: "24px",
+            "& .MuiChip-label": {
               px: 1.5,
-            }
+            },
           }}
         />
       );
@@ -169,14 +171,14 @@ useEffect(() => {
           label="Not Connected"
           size="small"
           sx={{
-            backgroundColor: '#f5f5f5',
-            color: '#666',
+            backgroundColor: "#f5f5f5",
+            color: "#666",
             fontWeight: 500,
-            fontSize: '12px',
-            height: '24px',
-            '& .MuiChip-label': {
+            fontSize: "12px",
+            height: "24px",
+            "& .MuiChip-label": {
               px: 1.5,
-            }
+            },
           }}
         />
       );
@@ -204,7 +206,7 @@ useEffect(() => {
             lg: "repeat(3, 1fr)",
           },
           gap: 2,
-          maxWidth: '1200px',
+          maxWidth: "1200px",
         }}
       >
         {integrations.map((integration) => (
@@ -216,12 +218,12 @@ useEffect(() => {
               flexDirection: "column",
               position: "relative",
               opacity: !isAuthenticated() ? 0.6 : 1,
-              backgroundColor: '#ffffff',
-              border: '1px solid #e0e0e0',
-              borderRadius: '8px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              backgroundColor: "#ffffff",
+              border: "1px solid #e0e0e0",
+              borderRadius: "8px",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
               "&:hover": {
-                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
                 transform: "translateY(-1px)",
               },
               transition: "all 0.2s ease",
@@ -236,22 +238,24 @@ useEffect(() => {
               }}
             >
               {/* Header with logo and status */}
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                mb: 2 
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  <Typography variant="h4" sx={{ fontSize: '24px' }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Typography variant="h4" sx={{ fontSize: "24px" }}>
                     {integration.logo}
                   </Typography>
-                  <Typography 
-                    variant="h6" 
-                    sx={{ 
-                      fontWeight: 600, 
-                      fontSize: '18px',
-                      color: '#333'
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: "18px",
+                      color: "#333",
                     }}
                   >
                     {integration.name}
@@ -264,20 +268,25 @@ useEffect(() => {
               <Typography
                 variant="body2"
                 color="text.secondary"
-                sx={{ 
+                sx={{
                   mb: 3,
-                  fontSize: '14px',
+                  fontSize: "14px",
                   lineHeight: 1.5,
-                  color: '#666'
+                  color: "#666",
                 }}
               >
                 {integration.description}
               </Typography>
 
               {/* Action Section */}
-              <Box sx={{ mt: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              
-
+              <Box
+                sx={{
+                  mt: "auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 {!integration.connected && (
                   <Button
                     variant="contained"
@@ -286,16 +295,16 @@ useEffect(() => {
                     disabled={!isAuthenticated()}
                     sx={{
                       backgroundColor: colors.blue500,
-                      color: 'white',
-                      fontSize: '14px',
+                      color: "white",
+                      fontSize: "14px",
                       fontWeight: 500,
-                      textTransform: 'none',
-                      padding: '6px 16px',
-                      borderRadius: '6px',
-                      '&:disabled': {
-                        backgroundColor: '#ccc',
-                        color: '#666',
-                      }
+                      textTransform: "none",
+                      padding: "6px 16px",
+                      borderRadius: "6px",
+                      "&:disabled": {
+                        backgroundColor: "#ccc",
+                        color: "#666",
+                      },
                     }}
                   >
                     Connect now
@@ -315,30 +324,34 @@ useEffect(() => {
         fullWidth
         PaperProps={{
           sx: {
-            borderRadius: '12px',
-            padding: '8px',
-          }
+            borderRadius: "12px",
+            padding: "8px",
+          },
         }}
       >
-        <DialogTitle sx={{ 
-          fontSize: '24px', 
-          fontWeight: 600, 
-          color: '#333',
-          pb: 2
-        }}>
+        <DialogTitle
+          sx={{
+            fontSize: "24px",
+            fontWeight: 600,
+            color: "#333",
+            pb: 2,
+          }}
+        >
           Connect to Shopify
         </DialogTitle>
         <DialogContent sx={{ pb: 3 }}>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 2, 
-            mb: 3,
-            p: 2,
-            backgroundColor: '#f8f9fa',
-            borderRadius: '8px'
-          }}>
-            <Typography variant="h4" sx={{ fontSize: '32px' }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              mb: 3,
+              p: 2,
+              backgroundColor: "#f8f9fa",
+              borderRadius: "8px",
+            }}
+          >
+            <Typography variant="h4" sx={{ fontSize: "32px" }}>
               🛍️
             </Typography>
             <Box>
@@ -358,18 +371,20 @@ useEffect(() => {
             value={shopDomain}
             onChange={(e) => setShopDomain(e.target.value)}
             error={!!error}
-            helperText={error || "Enter your shop name (without .myshopify.com)"}
-            sx={{ 
+            helperText={
+              error || "Enter your shop name (without .myshopify.com)"
+            }
+            sx={{
               mt: 1,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px',
-              }
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
             }}
             InputProps={{
               endAdornment: (
-                <Typography 
-                  variant="body2" 
-                  sx={{ color: '#666', whiteSpace: 'nowrap' }}
+                <Typography
+                  variant="body2"
+                  sx={{ color: "#666", whiteSpace: "nowrap" }}
                 >
                   .myshopify.com
                 </Typography>
@@ -378,11 +393,11 @@ useEffect(() => {
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button 
+          <Button
             onClick={() => setOpenModal(false)}
             sx={{
-              color: '#666',
-              textTransform: 'none',
+              color: "#666",
+              textTransform: "none",
               fontWeight: 500,
             }}
           >
@@ -395,12 +410,12 @@ useEffect(() => {
             startIcon={loading ? <CircularProgress size={16} /> : null}
             sx={{
               backgroundColor: colors.blue500,
-              color: 'white',
-              textTransform: 'none',
+              color: "white",
+              textTransform: "none",
               fontWeight: 500,
               px: 3,
               py: 1,
-              borderRadius: '8px',
+              borderRadius: "8px",
             }}
           >
             {loading ? "Connecting..." : "Connect Store"}
