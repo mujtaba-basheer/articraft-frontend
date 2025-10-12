@@ -149,7 +149,9 @@ export const IntegrationsPage = () => {
           console.log(response);
         },
         {
-          config_id: "public_profile",
+          config_id: "1512085583558692",
+          response_type: "code",
+          override_default_response_type: true,
         }
       );
     }
