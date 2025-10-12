@@ -31,6 +31,14 @@ interface Integration {
   logo?: string;
 }
 
+declare global {
+  interface Window {
+    FB: {
+      login: (callback: (response: any) => void, options: any) => void;
+    };
+  }
+}
+
 export const IntegrationsPage = () => {
   const [integrations, setIntegrations] = useState<Integration[]>([
     {
@@ -133,6 +141,20 @@ export const IntegrationsPage = () => {
     }
   };
 
+  const handleMetaConnect = async () => {
+    const FB = window.FB;
+    if (FB) {
+      FB.login(
+        function (response) {
+          console.log(response);
+        },
+        {
+          config_id: "public_profile",
+        }
+      );
+    }
+  };
+
   const handleConnect = (integrationId: string) => {
     // Check authentication first
     if (!isAuthenticated()) {
@@ -142,6 +164,8 @@ export const IntegrationsPage = () => {
 
     if (integrationId === "shopify") {
       setOpenModal(true);
+    } else if (integrationId === "meta") {
+      handleMetaConnect();
     } else {
       alert(`${integrationId} integration coming soon!`);
     }
